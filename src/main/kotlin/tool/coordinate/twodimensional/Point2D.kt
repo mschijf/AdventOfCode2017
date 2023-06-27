@@ -30,6 +30,8 @@ data class Point2D(val x: Int, val y: Int) {
 
     fun manhattanDistance(otherPos: Point2D) = (otherPos.x - x).absoluteValue + (otherPos.y - y).absoluteValue
 
+    override fun toString() = "($x, $y)"
+
     companion object {
         fun of(input: String): Point2D =
             input
@@ -47,7 +49,7 @@ data class Point2D(val x: Int, val y: Int) {
             Direction.DOWN -> 0
             Direction.UP -> 0
             Direction.LEFT -> -1
-            Direction.RIGHT -> -1
+            Direction.RIGHT -> 1
         }
     private fun Direction.dY() =
         when(this) {
@@ -68,16 +70,16 @@ data class Point2D(val x: Int, val y: Int) {
             WindDirection.SOUTHEAST -> WindDirection.EAST.dX()
             WindDirection.SOUTHWEST -> WindDirection.WEST.dX()
         }
-    private fun WindDirection.dY() =
+    private fun WindDirection.dY(): Int =
         when (this) {
             WindDirection.NORTH -> 1
             WindDirection.SOUTH -> -1
             WindDirection.EAST -> 0
             WindDirection.WEST -> 0
-            WindDirection.NORTHEAST -> WindDirection.NORTH.dX()
-            WindDirection.NORTHWEST -> WindDirection.NORTH.dX()
-            WindDirection.SOUTHEAST -> WindDirection.SOUTH.dX()
-            WindDirection.SOUTHWEST -> WindDirection.SOUTH.dX()
+            WindDirection.NORTHEAST -> WindDirection.NORTH.dY()
+            WindDirection.NORTHWEST -> WindDirection.NORTH.dY()
+            WindDirection.SOUTHEAST -> WindDirection.SOUTH.dY()
+            WindDirection.SOUTHWEST -> WindDirection.SOUTH.dY()
         }
 
 }

@@ -67,3 +67,22 @@ fun Set<Pos>.printAsGrid(defaultEmpty: String=".", defaultAvailable: String="#")
         println()
     }
 }
+
+fun <T> Map<Point2D, T>.printPoint2dMapAsGrid(default: String=".", itemAsString: (T)->String) {
+    val minX = this.keys.minByOrNull { it.x }?.x ?: -1
+    val minY = this.keys.minByOrNull { it.y }?.y ?: -1
+    val maxX = this.keys.maxByOrNull { it.x }?.x ?: -1
+    val maxY = this.keys.maxByOrNull { it.y }?.y ?: -1
+
+    (maxY downTo minY).forEach { y ->
+        (minX..maxX).forEach { x ->
+            val field = Point2D(x,y)
+            if (this.contains(field)) {
+                print(itemAsString(this[field]!!))
+            } else {
+                print(default)
+            }
+        }
+        println()
+    }
+}
