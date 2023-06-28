@@ -2,9 +2,9 @@ package tool.mylambdas.collectioncombination
 
 
 fun <T> List<T>.asCombinedItemsSequence(): Sequence<Pair<T, T>> =
-    asCombinedItemsSequence(this)
+    localAsCombinedItemsSequence(this)
 
-fun <T> asCombinedItemsSequence(list: List<T>): Sequence<Pair<T, T>> = sequence {
+private fun <T> localAsCombinedItemsSequence(list: List<T>): Sequence<Pair<T, T>> = sequence {
     for (i in 0 until list.size-1)
         for (j in i+1 until list.size)
             yield( Pair(list[i], list[j]) )
