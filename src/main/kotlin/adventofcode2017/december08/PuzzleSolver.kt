@@ -52,17 +52,6 @@ class PuzzleSolver(test: Boolean) : PuzzleSolverAbstract(test) {
         return Instruction(groups[0], groups[1], groups[2].toInt(), Condition(groups[4], groups[5], groups[6].toInt()))
     }
 
-    private fun createCondition(symbol: String, amount: Int): (Int) -> Boolean =
-        when (symbol) {
-            "==" -> { n -> n == amount }
-            "!=" -> { n -> n != amount }
-            "<" -> { n -> n < amount }
-            ">" -> { n -> n > amount }
-            "<=" -> { n -> n <= amount }
-            ">=" -> { n -> n >= amount }
-            else -> throw IllegalArgumentException("Unknown symbol: $symbol")
-        }
-
     inner class Condition(private val variable: String, private val comparator: String, private val comparedWith: Int) {
         fun isTrue() : Boolean {
             val value = variableMap.getOrDefault(variable, 0)
