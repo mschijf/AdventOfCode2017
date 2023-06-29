@@ -9,65 +9,78 @@ fun main() {
 
 class PuzzleSolver(test: Boolean) : PuzzleSolverAbstract(test) {
 
-    val groups = inputLines.map{line -> line.split("\\s+".toRegex()).toList()}
-    // b, inc, 5, if, a, >, 1
-    val variableMap = (groups.map{it[0]} + groups.map{it[4]}).distinct().associateWith{Variable(it, 0)}
-    val instructionList = groups
-        .map{
-            Instruction(variableMap[it[0]]!!, it[1], it[2].toInt(), Condition(variableMap[it[4]]!!, it[5], it[6].toInt()))
-        }
+    val variableMap = mutableMapOf<String,Int>()
+    val instructionList = inputLines.map{line -> parse(line)}
 
     override fun resultPartOne(): Any {
         instructionList.forEach {
             it.execute()
         }
-        return variableMap.values.maxOf { it.value }
+        return variableMap.values.max()
     }
 
     override fun resultPartTwo(): Any {
         //reset variables
-        variableMap.values.forEach { it.value = 0 }
+        variableMap.keys.forEach { variableMap[it] = 0 }
 
-        var overallMax = variableMap.values.maxOf { it.value }
+        var overallMax = variableMap.values.max()
         instructionList.forEach {
             it.execute()
-            overallMax = max(overallMax, variableMap.values.maxOf { it.value })
+            overallMax = max(overallMax, variableMap.values.max())
         }
         return overallMax
     }
 
-}
-
-data class Variable(val name: String, var value: Int) {
-    override fun hashCode() = name.hashCode()
-    override fun equals(other: Any?) = if (other is Variable) this.name == other.name else super.equals(other)
-    override fun toString() = "($name=$value)"
-}
-
-class Instruction(val variable: Variable, val operator: String, val amount: Int, val condition: Condition) {
-    fun execute() {
-        if (condition.isTrue()) {
-            when (operator) {
-                "inc" -> variable.value += amount
-                "dec" -> variable.value -= amount
-                else -> throw Exception("unexpected operator")
+    inner class Instruction(private val variable: String, private val operator: String, private val amount: Int, val condition: Condition) {
+        fun execute() {
+            if (condition.isTrue()) {
+                when (operator) {
+                    "inc" -> variableMap[variable] = variableMap.getOrDefault(variable, 0) + amount
+                    "dec" -> variableMap[variable] = variableMap.getOrDefault(variable, 0) - amount
+                    else -> throw Exception("unexpected operator")
+                }
             }
         }
     }
+
+    private fun parse(rawInput: String): Instruction {
+        // rawInput:  b   inc   5    if    a    >    1
+        //            ^    ^    ^    ^     ^    ^    ^
+        //groups:     0    1    2    3     4    5    6
+        //
+        val groups = rawInput.split("\\s+".toRegex()).toList()
+        return Instruction(groups[0], groups[1], groups[2].toInt(), Condition(groups[4], groups[5], groups[6].toInt()))
+    }
+
+    private fun createCondition(symbol: String, amount: Int): (Int) -> Boolean =
+        when (symbol) {
+            "==" -> { n -> n == amount }
+            "!=" -> { n -> n != amount }
+            "<" -> { n -> n < amount }
+            ">" -> { n -> n > amount }
+            "<=" -> { n -> n <= amount }
+            ">=" -> { n -> n >= amount }
+            else -> throw IllegalArgumentException("Unknown symbol: $symbol")
+        }
+
+    inner class Condition(private val variable: String, private val comparator: String, private val comparedWith: Int) {
+        fun isTrue() : Boolean {
+            val value = variableMap.getOrDefault(variable, 0)
+                return when (comparator) {
+                    "==" -> value == comparedWith
+                    "!=" -> value != comparedWith
+                    ">=" -> value >= comparedWith
+                    "<=" -> value <= comparedWith
+                    "<" -> value < comparedWith
+                    ">" -> value > comparedWith
+                    else -> throw Exception("Unexpected comparator: $comparator")
+                }
+        }
+
+    }
+
 }
 
-class Condition(val variable: Variable, val comparator: String, val comparedWith: Int) {
-    fun isTrue() : Boolean {
-        return when (comparator) {
-            "==" -> variable.value == comparedWith
-            "!=" -> variable.value != comparedWith
-            ">=" -> variable.value >= comparedWith
-            "<=" -> variable.value <= comparedWith
-            "<" -> variable.value < comparedWith
-            ">" -> variable.value > comparedWith
-            else -> throw Exception("Unexpected comparator: $comparator")
-        }
-    }
-}
+
 
 
