@@ -21,7 +21,7 @@ class PuzzleSolver(test: Boolean) : PuzzleSolverAbstract(test) {
 
     private fun Map<Int, Set<Int>>.connectPipeGroups(): List<Set<Int>> {
         var result = listOf(emptySet<Int>())
-        pipes.map{it.value + it.key}.forEach { pipesConnected ->
+        this.map{it.value + it.key}.forEach { pipesConnected ->
             result = result
                 .partition { it.intersect(pipesConnected).isNotEmpty() }
                 .let{listOf(it.first.flatten().toSet()+pipesConnected) + it.second}
