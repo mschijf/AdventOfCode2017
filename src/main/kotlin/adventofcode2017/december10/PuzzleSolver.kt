@@ -8,7 +8,6 @@ fun main() {
 
 class PuzzleSolver(test: Boolean) : PuzzleSolverAbstract(test) {
 
-
     override fun resultPartOne(): Any {
         val numbers = IntArray(if (test) 5 else 256) { it }
         val lengths = inputLines.first().split(",").map{it.trim().toInt()}
