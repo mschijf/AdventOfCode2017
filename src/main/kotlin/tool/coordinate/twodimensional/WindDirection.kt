@@ -38,4 +38,13 @@ enum class WindDirection(val directionSymbol: String) {
     abstract fun rotateLeft(): WindDirection
     override fun toString() = directionSymbol
     fun opposite() = rotateLeft().rotateLeft().rotateLeft().rotateLeft()
+
+    companion object {
+        fun of(s: String): WindDirection =
+            WindDirection
+                .values()
+                .firstOrNull() { it.directionSymbol == s.uppercase() }
+                ?: throw Exception("$s is not a symbol in WindDirection")
+    }
+
 }
