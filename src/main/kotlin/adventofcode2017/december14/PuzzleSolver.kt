@@ -3,7 +3,6 @@ package adventofcode2017.december14
 import adventofcode2017.PuzzleSolverAbstract
 import adventofcode2017.knotHashEncode
 import tool.coordinate.twodimensional.Pos
-import tool.coordinate.twodimensional.printGrid
 import java.math.BigInteger
 
 fun main() {
@@ -14,32 +13,16 @@ class PuzzleSolver(test: Boolean) : PuzzleSolverAbstract(test) {
 
     private val keyString = if (test) "flqrgnkx" else "hxtvlmkl"
 
-    private val grid = (0..127)
-        .map{row->"$keyString-$row".knotHashEncode().hexToBin().map{ch -> ch.digitToInt()}}
+    private val usedSquares = (0..127)
+        .flatMap{row->"$keyString-$row".knotHashEncode().hexToBin().mapIndexed{col, ch -> if (ch == '1') Pos(col, row) else null}}
+        .filterNotNull()
 
     override fun resultPartOne(): Any {
-        return grid.sumOf{row -> row.sum()}
+        return usedSquares.size
     }
 
     override fun resultPartTwo(): Any {
         var regions = listOf(emptySet<Pos>())
-
-        val usedSquares = grid
-            .flatMapIndexed { rowIndex, row ->
-                row.mapIndexed { colIndex, item ->
-                    if (item == 1) Pos(colIndex, rowIndex) else null
-                }.filterNotNull()
-            }
-
-// Onderstaande uitgesterde code gebruikt intersect om te kijken of er overlap is. Deze code is 1,3 seconde
-// Terwijl de code daaronder (niet uitgesterd) gebruik maakt van een snellere check op oerlap. Deze duurt 0,3 seconde
-//
-//        usedSquares.forEach { square ->
-//            val neighbors = square.neighbors().toSet()
-//            regions = regions
-//                .partition { region -> region.intersect(neighbors).isNotEmpty() }
-//                .run { listOf(this.first.flatten().toSet() + square) + this.second }
-
         usedSquares.forEach { square ->
             val neighbors = square.neighbors().toSet()
             regions = regions
