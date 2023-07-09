@@ -11,8 +11,8 @@ class PuzzleSolver(test: Boolean) : PuzzleSolverAbstract(test) {
     private val startA = if (test) 65L else 722L
     private val startB = if (test) 8921L else 354L
 
-    private val factorGeneratorA = 16807
-    private val factorGeneratorB = 48271
+    private val factorA = 16807L
+    private val factorB = 48271L
 
     private val divider = 2147483647L
 
@@ -20,37 +20,21 @@ class PuzzleSolver(test: Boolean) : PuzzleSolverAbstract(test) {
 
 
     override fun resultPartOne(): Any {
-        val generatePairs = generateSequence(Pair(startA, startB)) {
-            Pair(it.first.nextNumA1(), it.second.nextNumB1())
-        }
-        return generatePairs.drop(1).take(40_000_000).count{(it.first and lowerBitsMask) == (it.second and lowerBitsMask)}
+        return generator(startA, factorA)
+            .zip(generator(startB, factorB))
+            .take(40_000_000)
+            .count{ (it.first and lowerBitsMask) == (it.second and lowerBitsMask) }
     }
 
     override fun resultPartTwo(): Any {
-        val generatePairs = generateSequence(Pair(startA, startB)) {
-            Pair(it.first.nextNumA2(), it.second.nextNumB2())
-        }
-        return generatePairs.drop(1).take(5_000_000).count{(it.first and lowerBitsMask) == (it.second and lowerBitsMask)}
+        return generator(startA, factorA).filter{number -> number % 4 == 0L}
+            .zip(generator(startB, factorB).filter{number -> number % 8 == 0L})
+            .take(5_000_000)
+            .count{ (it.first and lowerBitsMask) == (it.second and lowerBitsMask) }
     }
 
-    private fun Long.nextNumA1() = this * factorGeneratorA % divider
-    private fun Long.nextNumB1() = this * factorGeneratorB % divider
-
-    private fun Long.nextNumA2(): Long {
-        var result = this * factorGeneratorA % divider
-        while (result % 4L != 0L) {
-            result = result * factorGeneratorA % divider
-        }
-        return result
-    }
-
-    private fun Long.nextNumB2(): Long {
-        var result = this * factorGeneratorB % divider
-        while (result % 8L != 0L) {
-            result = result * factorGeneratorB % divider
-        }
-        return result
-    }
+    private fun generator(start: Long, factor: Long): Sequence<Long> =
+        generateSequence((start*factor) % divider){ (it*factor) % divider}
 
 }
 
