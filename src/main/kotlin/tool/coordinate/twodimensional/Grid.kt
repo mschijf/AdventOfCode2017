@@ -86,3 +86,16 @@ fun <T> Map<Point2D, T>.printPoint2dMapAsGrid(default: String=".", itemAsString:
         println()
     }
 }
+
+fun <T> List<List<T>>.printGrid(itemAsString: (gridValue: T)->String) {
+    this.printGridIndexed{_, _, gridValue -> itemAsString(gridValue)}
+}
+
+fun <T> List<List<T>>.printGridIndexed(itemAsString: (row:Int, col:Int, gridValue: T)->String) {
+    for (row in this.indices) {
+        for (col in this[row].indices) {
+            print(itemAsString(row, col, this[row][col]))
+        }
+        println()
+    }
+}
