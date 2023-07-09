@@ -3,6 +3,7 @@ package adventofcode2017.december14
 import adventofcode2017.PuzzleSolverAbstract
 import adventofcode2017.knotHashEncode
 import tool.coordinate.twodimensional.Pos
+import tool.mylambdas.intersects
 import java.math.BigInteger
 
 fun main() {
@@ -24,20 +25,12 @@ class PuzzleSolver(test: Boolean) : PuzzleSolverAbstract(test) {
     override fun resultPartTwo(): Any {
         var regions = listOf(emptySet<Pos>())
         usedSquares.forEach { square ->
-            val neighbors = square.neighbors().toSet()
+            val neighborSet = square.neighbors().toSet()
             regions = regions
-                .partition { region -> region.containsOneOf(neighbors) }
+                .partition { region -> region.intersects(neighborSet) }
                 .run { listOf(this.first.flatten().toSet() + square) + this.second }
         }
         return regions.filterNot { it.isEmpty() }.size
-    }
-
-    /**
-     * On te kijken of er overlap is tussen twee sets, kun je kijken de doosnede van de twee sets leeg is, maar sneller is het
-     * om te kijken of er een element van de ene set, in de andere set zit.
-     */
-    private fun Set<Pos>.containsOneOf(other: Set<Pos>): Boolean {
-        return other.any{this.contains(it)}
     }
 
     /**
