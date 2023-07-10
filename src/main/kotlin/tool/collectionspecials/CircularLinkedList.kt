@@ -14,6 +14,12 @@ class CircularLinkedList<T>:Iterable<T> {
 
     fun isEmpty() = size == 0
 
+    /**
+     * add an element before the first element ever inserted
+     * if list is empty, then it will be the first element
+     *
+     * returns: the node including the element
+     */
     fun add(element: T): Node {
         return if (first == null) {
             addFirst(element)
@@ -28,8 +34,13 @@ class CircularLinkedList<T>:Iterable<T> {
         return first!!
     }
 
-    fun add(pos: Node, element: T): Node {
-        val node = pos
+    /**
+     * add an element before the node referred by 'node'
+     * assumption: the node is in the list.
+     *
+     * returns: the new node including the element
+     */
+    fun add(node: Node, element: T): Node {
         val new = Node(element, node.prev, node)
         val tmpPrev = new.prev
         val tmpNext = new.next
@@ -39,8 +50,10 @@ class CircularLinkedList<T>:Iterable<T> {
         return new
     }
 
-    fun removeAt(p: Node): Boolean {
-        val nodeToBeRemoved = p
+    /**
+     * removes 'nodeToBeRemoved'
+     */
+    fun removeAt(nodeToBeRemoved: Node): Boolean {
         nodeToBeRemoved.prev.next = nodeToBeRemoved.next
         nodeToBeRemoved.next.prev = nodeToBeRemoved.prev
         if (first == nodeToBeRemoved) {
@@ -53,6 +66,9 @@ class CircularLinkedList<T>:Iterable<T> {
         return true
     }
 
+    /**
+     * returns the data of the given node
+     */
     fun get(p: Node): T {
         return p.data
     }
