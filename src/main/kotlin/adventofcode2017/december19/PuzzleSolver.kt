@@ -1,10 +1,13 @@
 package adventofcode2017.december19
 
 import adventofcode2017.PuzzleSolverAbstract
+import tool.coordinate.twodimensional.Direction
 import tool.coordinate.twodimensional.Pos
+import tool.coordinate.twodimensional.WindDirection
+import kotlin.math.absoluteValue
 
 fun main() {
-    PuzzleSolver(test=false).showResult()
+    PuzzleSolver(test = false).showResult()
 }
 
 class PuzzleSolver(test: Boolean) : PuzzleSolverAbstract(test) {
@@ -12,13 +15,13 @@ class PuzzleSolver(test: Boolean) : PuzzleSolverAbstract(test) {
     private val maze = inputLines
         .flatMapIndexed { y: Int, line: String -> line.mapIndexed { x, c -> Pos(x, y) to c } }
         .toMap()
-        .filterValues{it != ' '}
+        .filterValues { it != ' ' }
     private val mazeCoordinates = maze.keys
-    private val start = maze.keys.first{it.y == 0}
+    private val start = maze.keys.first { it.y == 0 }
 
     override fun resultPartOne(): Any {
         return walkingOrder()
-            .map{maze[it]!!}
+            .map { maze[it]!! }
             .filter { it in 'A'..'Z' }
             .joinToString("")
     }
@@ -27,30 +30,31 @@ class PuzzleSolver(test: Boolean) : PuzzleSolverAbstract(test) {
         return walkingOrder().size
     }
 
+    /**
+     * Hou het wandelpad bij, beginnend bij 'start'
+     * Om de volgende stap te bepalen, doen we het volgende:
+     *   Vanuit de  laatste stap, kijken we welke buren we in de 'maze' hebben (met uitzondering van de plek waar we vandaan komen)
+     *   Als we meerdere buren hebben, dan kiezen we degene die overeenkomt met de richting die we aan het lopen waren
+     *       (anders gezegd, die op dezeflde lijn ligt als de lijn tussen het vorige en huige punt)
+     *   Hebben we maar één buur, dan kiezen we die.
+     *   Hebben we geen buur, dan stoppen we met itereren.
+     *   De zo bepaalde buur, is de volgende stap en die wordt aan het pad toegevoegd.
+     */
     private fun walkingOrder(): List<Pos> {
-        var current = start
-        val walkingOrder = mutableListOf<Pos>()
+        val walkingOrder = mutableListOf(start)
         var previous = start
         while (true) {
-            walkingOrder.add(current)
-            val nextCandidates = current.neighbors().minus(previous).intersect(mazeCoordinates)
-            val next = when (nextCandidates.size) {
-                0 -> break
-                1 -> nextCandidates.first()
-                else -> nextCandidates.first { it.direction(current) == current.direction(previous) }
-            }
+            val current = walkingOrder.last()
+            val nextCandidates = current.neighbors().filterNot{it == previous} intersect mazeCoordinates
+            val next = nextCandidates.firstOrNull { it.inLine(current, previous) } ?: nextCandidates.firstOrNull() ?: break
+            walkingOrder.add(next)
             previous = current
-            current = next
         }
         return walkingOrder
     }
 
-    private fun Pos.direction(other: Pos) =
-        if (this.x == other.x) HorVer.VERTICAL else HorVer.HORIZONTAL
-
-    enum class HorVer{
-        HORIZONTAL, VERTICAL
-    }
+    private fun Pos.inLine(pos1: Pos, pos2: Pos) =
+        this.directionOrNull(pos1) == pos1.directionOrNull(pos2)
 }
 
 

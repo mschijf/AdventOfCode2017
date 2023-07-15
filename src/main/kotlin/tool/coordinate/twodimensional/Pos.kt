@@ -29,6 +29,28 @@ data class Pos(val x: Int, val y: Int) {
     fun southwest() = moveOneStep(WindDirection.SOUTHWEST)
 
     fun manhattanDistance(otherPos: Pos) = (otherPos.x - x).absoluteValue + (otherPos.y - y).absoluteValue
+    fun directionOrNull(other: Pos) =
+        if (this.x == other.x) {
+            if (this.y < other.y) Direction.DOWN else Direction.UP
+        } else if (this.y == other.y) {
+            if (this.x < other.x) Direction.RIGHT else Direction.LEFT
+        } else {
+            null
+        }
+
+    fun windDirectionOrNull(other: Pos) =
+        if (this.x == other.x) {
+            if (this.y < other.y) WindDirection.SOUTH else WindDirection.NORTH
+        } else if (this.y == other.y) {
+            if (this.x < other.x) WindDirection.EAST else WindDirection.WEST
+        } else if (this.y - other.y == this.x - other.x) {
+            if (this.y < other.y) WindDirection.SOUTHEAST else WindDirection.NORTHWEST
+        } else if (this.y - other.y == other.x - this.x) {
+            if (this.y < other.y) WindDirection.SOUTHWEST else WindDirection.NORTHEAST
+        } else {
+            null
+        }
+    override fun toString() = "($x, $y)"
 
     companion object {
         fun of(input: String): Pos = input
