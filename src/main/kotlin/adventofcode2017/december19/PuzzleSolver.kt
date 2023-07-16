@@ -1,7 +1,9 @@
 package adventofcode2017.december19
 
 import adventofcode2017.PuzzleSolverAbstract
+import tool.coordinate.twodimensional.Point
 import tool.coordinate.twodimensional.Pos
+import tool.coordinate.twodimensional.posOf
 
 fun main() {
     PuzzleSolver(test = false).showResult()
@@ -10,11 +12,11 @@ fun main() {
 class PuzzleSolver(test: Boolean) : PuzzleSolverAbstract(test) {
 
     private val maze = inputLines
-        .flatMapIndexed { y: Int, line: String -> line.mapIndexed { x, c -> Pos(x, y) to c } }
+        .flatMapIndexed { y: Int, line: String -> line.mapIndexed { x, c -> posOf(x, y) to c } }
         .toMap()
         .filterValues { it != ' ' }
     private val mazeCoordinates = maze.keys
-    private val start = maze.keys.first { it.y == 0 }
+    private val start = mazeCoordinates.first { it.y == 0 }
 
     override fun resultPartOne(): Any {
         return walkingOrder()
@@ -37,7 +39,7 @@ class PuzzleSolver(test: Boolean) : PuzzleSolverAbstract(test) {
      *   Hebben we geen buur, dan stoppen we met itereren.
      *   De zo bepaalde buur, is de volgende stap en die wordt aan het pad toegevoegd.
      */
-    private fun walkingOrder(): List<Pos> {
+    private fun walkingOrder(): List<Point> {
         val walkingOrder = mutableListOf(start)
         var previous = start
         while (true) {
@@ -50,7 +52,7 @@ class PuzzleSolver(test: Boolean) : PuzzleSolverAbstract(test) {
         return walkingOrder
     }
 
-    private fun Pos.inLine(pos1: Pos, pos2: Pos) =
+    private fun Point.inLine(pos1: Point, pos2: Point) =
         this.directionToOrNull(pos1) == pos1.directionToOrNull(pos2)
 }
 
