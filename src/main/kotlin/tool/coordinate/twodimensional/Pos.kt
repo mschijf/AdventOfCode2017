@@ -8,8 +8,8 @@ data class Pos(val x: Int, val y: Int) {
     fun plusX(dx: Int) = plusXY(dx, 0)
     fun plusY(dy: Int) = plusXY(0, dy)
 
-    fun moveOneStep(dir: Direction) = plusXY(dir.dX(), dir.dY())
-    fun moveOneStep(dir: WindDirection) = plusXY(dir.dX(), dir.dY())
+    fun moveOneStep(dir: Direction) = plusXY(dir.dXY().first, dir.dXY().second)
+    fun moveOneStep(dir: WindDirection) = plusXY(dir.dXY().first, dir.dXY().second)
 
     fun up() = moveOneStep(Direction.UP)
     fun down() = moveOneStep(Direction.DOWN)
@@ -40,66 +40,53 @@ data class Pos(val x: Int, val y: Int) {
             .split(",").run { Pos(this[0].trim().toInt(), this[1].trim().toInt()) }
     }
 
+    fun directionToOrNull(other: Pos) =
+        if (this.x == other.x) {
+            if (this.above(other)) Direction.DOWN else Direction.UP
+        } else if (this.y == other.y) {
+            if (this.leftOf(other)) Direction.RIGHT else Direction.LEFT
+        } else {
+            null
+        }
+
+    fun windDirectionToOrNull(other: Pos) =
+        if (this.x == other.x) {
+            if (this.above(other)) WindDirection.SOUTH else WindDirection.NORTH
+        } else if (this.y == other.y) {
+            if (this.leftOf(other)) WindDirection.EAST else WindDirection.WEST
+        } else if ((this.y - other.y).absoluteValue == (this.x - other.x).absoluteValue) {
+            if (this.above(other)) {
+                if (this.leftOf(other)) WindDirection.SOUTHEAST else WindDirection.SOUTHWEST
+            } else {
+                if (this.leftOf(other)) WindDirection.NORTHEAST else WindDirection.NORTHWEST
+            }
+        } else {
+            null
+        }
+
     //------------------------------------------------------------------------------------------------------------------
 
-    fun directionOrNull(other: Pos) =
-        if (this.x == other.x) {
-            if (this.y < other.y) Direction.DOWN else Direction.UP
-        } else if (this.y == other.y) {
-            if (this.x < other.x) Direction.RIGHT else Direction.LEFT
-        } else {
-            null
+    private fun above(other: Pos) = this.y < other.y
+    private fun leftOf(other: Pos) = this.x < other.x
+
+    private fun Direction.dXY() =
+        when(this) {
+            Direction.DOWN -> Pair(0,1)
+            Direction.UP -> Pair(0,-1)
+            Direction.LEFT -> Pair(-1,0)
+            Direction.RIGHT -> Pair(1,0)
         }
 
-    fun windDirectionOrNull(other: Pos) =
-        if (this.x == other.x) {
-            if (this.y < other.y) WindDirection.SOUTH else WindDirection.NORTH
-        } else if (this.y == other.y) {
-            if (this.x < other.x) WindDirection.EAST else WindDirection.WEST
-        } else if (this.y - other.y == this.x - other.x) {
-            if (this.y < other.y) WindDirection.SOUTHEAST else WindDirection.NORTHWEST
-        } else if (this.y - other.y == other.x - this.x) {
-            if (this.y < other.y) WindDirection.SOUTHWEST else WindDirection.NORTHEAST
-        } else {
-            null
-        }
-
-    private fun Direction.dX() =
+    private fun WindDirection.dXY() =
         when(this) {
-            Direction.DOWN -> 0
-            Direction.UP -> 0
-            Direction.LEFT -> -1
-            Direction.RIGHT -> 1
-        }
-    private fun Direction.dY() =
-        when(this) {
-            Direction.DOWN -> 1
-            Direction.UP -> -1
-            Direction.LEFT -> 0
-            Direction.RIGHT -> 0
-        }
-
-    private fun WindDirection.dX(): Int =
-        when(this) {
-            WindDirection.NORTH -> 0
-            WindDirection.SOUTH -> 0
-            WindDirection.EAST -> 1
-            WindDirection.WEST -> -1
-            WindDirection.NORTHEAST -> WindDirection.EAST.dX()
-            WindDirection.NORTHWEST -> WindDirection.WEST.dX()
-            WindDirection.SOUTHEAST -> WindDirection.EAST.dX()
-            WindDirection.SOUTHWEST -> WindDirection.WEST.dX()
-        }
-    private fun WindDirection.dY(): Int =
-        when (this) {
-            WindDirection.NORTH -> -1
-            WindDirection.SOUTH -> 1
-            WindDirection.EAST -> 0
-            WindDirection.WEST -> 0
-            WindDirection.NORTHEAST -> WindDirection.NORTH.dY()
-            WindDirection.NORTHWEST -> WindDirection.NORTH.dY()
-            WindDirection.SOUTHEAST -> WindDirection.SOUTH.dY()
-            WindDirection.SOUTHWEST -> WindDirection.SOUTH.dY()
+            WindDirection.NORTH -> Pair(0,-1)
+            WindDirection.SOUTH -> Pair(0,1)
+            WindDirection.EAST -> Pair(1,0)
+            WindDirection.WEST -> Pair(-1,0)
+            WindDirection.NORTHEAST -> Pair(1,-1)
+            WindDirection.NORTHWEST -> Pair(-1,-1)
+            WindDirection.SOUTHEAST -> Pair(1,1)
+            WindDirection.SOUTHWEST -> Pair(-1,1)
         }
 }
 

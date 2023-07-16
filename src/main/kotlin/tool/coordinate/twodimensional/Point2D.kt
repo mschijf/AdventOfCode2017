@@ -43,29 +43,34 @@ data class Point2D(val x: Int, val y: Int) {
         val origin = Point2D(0,0)
     }
 
+    fun directionToOrNull(other: Point2D) =
+        if (this.x == other.x) {
+            if (this.above(other)) Direction.DOWN else Direction.UP
+        } else if (this.y == other.y) {
+            if (this.leftOf(other)) Direction.RIGHT else Direction.LEFT
+        } else {
+            null
+        }
+
+    fun windDirectionToOrNull(other: Point2D) =
+        if (this.x == other.x) {
+            if (this.above(other)) WindDirection.SOUTH else WindDirection.NORTH
+        } else if (this.y == other.y) {
+            if (this.leftOf(other)) WindDirection.EAST else WindDirection.WEST
+        } else if ((this.y - other.y).absoluteValue == (this.x - other.x).absoluteValue) {
+            if (this.above(other)) {
+                if (this.leftOf(other)) WindDirection.SOUTHEAST else WindDirection.SOUTHWEST
+            } else {
+                if (this.leftOf(other)) WindDirection.NORTHEAST else WindDirection.NORTHWEST
+            }
+        } else {
+            null
+        }
+
     //------------------------------------------------------------------------------------------------------------------
 
-    fun directionOrNull(other: Point2D) =
-        if (this.x == other.x) {
-            if (this.y < other.y) Direction.UP else Direction.DOWN
-        } else if (this.y == other.y) {
-            if (this.x < other.x) Direction.RIGHT else Direction.LEFT
-        } else {
-            null
-        }
-
-    fun windDirectionOrNull(other: Point2D) =
-        if (this.x == other.x) {
-            if (this.y < other.y) WindDirection.NORTH else WindDirection.SOUTH
-        } else if (this.y == other.y) {
-            if (this.x < other.x) WindDirection.EAST else WindDirection.WEST
-        } else if (this.y - other.y == this.x - other.x) {
-            if (this.y < other.y) WindDirection.NORTHEAST else WindDirection.SOUTHWEST
-        } else if (this.y - other.y == other.x - this.x) {
-            if (this.y < other.y) WindDirection.NORTHWEST else WindDirection.SOUTHEAST
-        } else {
-            null
-        }
+    private fun above(other: Point2D) = this.y > other.y
+    private fun leftOf(other: Point2D) = this.x < other.x
 
     private fun Direction.dX() =
         when(this) {
