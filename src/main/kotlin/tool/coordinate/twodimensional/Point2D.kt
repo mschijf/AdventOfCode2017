@@ -11,9 +11,6 @@ data class Point2D(val x: Int, val y: Int) {
     fun moveOneStep(dir: Direction) = plusXY(dir.dX(), dir.dY())
     fun moveOneStep(dir: WindDirection) = plusXY(dir.dX(), dir.dY())
 
-    fun neighbors() = listOf(up(), down(), left(), right())
-    fun allWindDirectionNeighbors() = listOf(north(), northeast(), east(), southeast(), south(), southwest(), west(), northwest())
-
     fun up() = moveOneStep(Direction.UP)
     fun down() = moveOneStep(Direction.DOWN)
     fun left() = moveOneStep(Direction.LEFT)
@@ -28,8 +25,25 @@ data class Point2D(val x: Int, val y: Int) {
     fun northwest() = moveOneStep(WindDirection.NORTHWEST)
     fun southwest() = moveOneStep(WindDirection.SOUTHWEST)
 
+    fun neighbors() = listOf(up(), down(), left(), right())
+    fun allWindDirectionNeighbors() = listOf(north(), northeast(), east(), southeast(), south(), southwest(), west(), northwest())
+
     fun manhattanDistance(otherPos: Point2D) = (otherPos.x - x).absoluteValue + (otherPos.y - y).absoluteValue
 
+    override fun toString() = "($x, $y)"
+    companion object {
+        fun of(input: String): Point2D =
+            input
+                .removeSurrounding("<", ">")
+                .removeSurrounding("(", ")")
+                .removeSurrounding("[", "]")
+                .removeSurrounding("{", "}")
+                .split(",").run { Point2D(this[0].trim().toInt(), this[1].trim().toInt()) }
+
+        val origin = Point2D(0,0)
+    }
+
+    //------------------------------------------------------------------------------------------------------------------
 
     fun directionOrNull(other: Point2D) =
         if (this.x == other.x) {
@@ -52,21 +66,6 @@ data class Point2D(val x: Int, val y: Int) {
         } else {
             null
         }
-
-
-    override fun toString() = "($x, $y)"
-
-    companion object {
-        fun of(input: String): Point2D =
-            input
-                .removeSurrounding("<", ">")
-                .removeSurrounding("(", ")")
-                .removeSurrounding("[", "]")
-                .removeSurrounding("{", "}")
-                .split(",").run { Point2D(this[0].trim().toInt(), this[1].trim().toInt()) }
-
-        val origin = Point2D(0,0)
-    }
 
     private fun Direction.dX() =
         when(this) {
@@ -105,6 +104,5 @@ data class Point2D(val x: Int, val y: Int) {
             WindDirection.SOUTHEAST -> WindDirection.SOUTH.dY()
             WindDirection.SOUTHWEST -> WindDirection.SOUTH.dY()
         }
-
 }
 

@@ -11,9 +11,6 @@ data class Pos(val x: Int, val y: Int) {
     fun moveOneStep(dir: Direction) = plusXY(dir.dX(), dir.dY())
     fun moveOneStep(dir: WindDirection) = plusXY(dir.dX(), dir.dY())
 
-    fun neighbors() = listOf(up(), down(), left(), right())
-    fun allWindDirectionNeighbors() = listOf(north(), northeast(), east(), southeast(), south(), southwest(), west(), northwest())
-
     fun up() = moveOneStep(Direction.UP)
     fun down() = moveOneStep(Direction.DOWN)
     fun left() = moveOneStep(Direction.LEFT)
@@ -28,7 +25,23 @@ data class Pos(val x: Int, val y: Int) {
     fun northwest() = moveOneStep(WindDirection.NORTHWEST)
     fun southwest() = moveOneStep(WindDirection.SOUTHWEST)
 
+    fun neighbors() = listOf(up(), down(), left(), right())
+    fun allWindDirectionNeighbors() = listOf(north(), northeast(), east(), southeast(), south(), southwest(), west(), northwest())
+
     fun manhattanDistance(otherPos: Pos) = (otherPos.x - x).absoluteValue + (otherPos.y - y).absoluteValue
+
+    override fun toString() = "($x, $y)"
+    companion object {
+        fun of(input: String): Pos = input
+            .removeSurrounding("<", ">")
+            .removeSurrounding("(", ")")
+            .removeSurrounding("[", "]")
+            .removeSurrounding("{", "}")
+            .split(",").run { Pos(this[0].trim().toInt(), this[1].trim().toInt()) }
+    }
+
+    //------------------------------------------------------------------------------------------------------------------
+
     fun directionOrNull(other: Pos) =
         if (this.x == other.x) {
             if (this.y < other.y) Direction.DOWN else Direction.UP
@@ -50,16 +63,6 @@ data class Pos(val x: Int, val y: Int) {
         } else {
             null
         }
-    override fun toString() = "($x, $y)"
-
-    companion object {
-        fun of(input: String): Pos = input
-            .removeSurrounding("<", ">")
-            .removeSurrounding("(", ")")
-            .removeSurrounding("[", "]")
-            .removeSurrounding("{", "}")
-            .split(",").run { Pos(this[0].trim().toInt(), this[1].trim().toInt()) }
-    }
 
     private fun Direction.dX() =
         when(this) {
@@ -98,6 +101,5 @@ data class Pos(val x: Int, val y: Int) {
             WindDirection.SOUTHEAST -> WindDirection.SOUTH.dY()
             WindDirection.SOUTHWEST -> WindDirection.SOUTH.dY()
         }
-
 }
 
