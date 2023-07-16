@@ -1,10 +1,7 @@
 package adventofcode2017.december19
 
 import adventofcode2017.PuzzleSolverAbstract
-import tool.coordinate.twodimensional.Direction
 import tool.coordinate.twodimensional.Pos
-import tool.coordinate.twodimensional.WindDirection
-import kotlin.math.absoluteValue
 
 fun main() {
     PuzzleSolver(test = false).showResult()
@@ -54,7 +51,7 @@ class PuzzleSolver(test: Boolean) : PuzzleSolverAbstract(test) {
     }
 
     private fun Pos.inLine(pos1: Pos, pos2: Pos) =
-        this.directionOrNull(pos1) == pos1.directionOrNull(pos2)
+        this.directionToOrNull(pos1) == pos1.directionToOrNull(pos2)
 }
 
 
