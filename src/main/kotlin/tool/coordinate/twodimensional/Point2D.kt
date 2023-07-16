@@ -3,13 +3,18 @@ package tool.coordinate.twodimensional
 import kotlin.math.absoluteValue
 
 data class Point2D(val x: Int, val y: Int) {
+
+    private fun above(other: Point2D) = this.y > other.y
+    private fun leftOf(other: Point2D) = this.x < other.x
+    private val ONEDOWN = -1
+
     fun plusXY(dx: Int, dy: Int) = Point2D(x+dx, y+dy)
 
     fun plusX(dx: Int) = plusXY(dx, 0)
     fun plusY(dy: Int) = plusXY(0, dy)
 
-    fun moveOneStep(dir: Direction) = plusXY(dir.dX(), dir.dY())
-    fun moveOneStep(dir: WindDirection) = plusXY(dir.dX(), dir.dY())
+    fun moveOneStep(dir: Direction) = plusXY(dir.dXY().first, dir.dXY().second)
+    fun moveOneStep(dir: WindDirection) = plusXY(dir.dXY().first, dir.dXY().second)
 
     fun up() = moveOneStep(Direction.UP)
     fun down() = moveOneStep(Direction.DOWN)
@@ -67,47 +72,25 @@ data class Point2D(val x: Int, val y: Int) {
             null
         }
 
-    //------------------------------------------------------------------------------------------------------------------
-
-    private fun above(other: Point2D) = this.y > other.y
-    private fun leftOf(other: Point2D) = this.x < other.x
-
-    private fun Direction.dX() =
+    private fun Direction.dXY() =
         when(this) {
-            Direction.DOWN -> 0
-            Direction.UP -> 0
-            Direction.LEFT -> -1
-            Direction.RIGHT -> 1
-        }
-    private fun Direction.dY() =
-        when(this) {
-            Direction.DOWN -> -1
-            Direction.UP -> 1
-            Direction.LEFT -> 0
-            Direction.RIGHT -> 0
+            Direction.DOWN -> Pair(0,ONEDOWN)
+            Direction.UP -> Pair(0,-ONEDOWN)
+            Direction.LEFT -> Pair(-1,0)
+            Direction.RIGHT -> Pair(1,0)
         }
 
-    private fun WindDirection.dX(): Int =
+    private fun WindDirection.dXY() =
         when(this) {
-            WindDirection.NORTH -> 0
-            WindDirection.SOUTH -> 0
-            WindDirection.EAST -> 1
-            WindDirection.WEST -> -1
-            WindDirection.NORTHEAST -> WindDirection.EAST.dX()
-            WindDirection.NORTHWEST -> WindDirection.WEST.dX()
-            WindDirection.SOUTHEAST -> WindDirection.EAST.dX()
-            WindDirection.SOUTHWEST -> WindDirection.WEST.dX()
+            WindDirection.NORTH -> Pair(0,-ONEDOWN)
+            WindDirection.SOUTH -> Pair(0,ONEDOWN)
+            WindDirection.EAST -> Pair(1,0)
+            WindDirection.WEST -> Pair(-1,0)
+            WindDirection.NORTHEAST -> Pair(1,-ONEDOWN)
+            WindDirection.NORTHWEST -> Pair(-1,-ONEDOWN)
+            WindDirection.SOUTHEAST -> Pair(1,ONEDOWN)
+            WindDirection.SOUTHWEST -> Pair(-1,ONEDOWN)
         }
-    private fun WindDirection.dY(): Int =
-        when (this) {
-            WindDirection.NORTH -> 1
-            WindDirection.SOUTH -> -1
-            WindDirection.EAST -> 0
-            WindDirection.WEST -> 0
-            WindDirection.NORTHEAST -> WindDirection.NORTH.dY()
-            WindDirection.NORTHWEST -> WindDirection.NORTH.dY()
-            WindDirection.SOUTHEAST -> WindDirection.SOUTH.dY()
-            WindDirection.SOUTHWEST -> WindDirection.SOUTH.dY()
-        }
+
 }
 
