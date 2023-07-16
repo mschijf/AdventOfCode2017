@@ -1,6 +1,6 @@
 package tool.coordinate.spiral
 
-import tool.coordinate.twodimensional.Point2D
+import tool.coordinate.twodimensional.XYCoordinate
 
 private fun Int.spiralIndexToRingLevel(): Int {
     var i=1
@@ -10,7 +10,7 @@ private fun Int.spiralIndexToRingLevel(): Int {
 }
 
 /**
- * Spiral Index        ==>  Point2D
+ * Spiral Index        ==>  XYCoordinate
  *
  * 17  16  15  14  13       (-2,  2)    (-1,  2)     (0,  2)     (1,  2)     (2,  2)
  * 18   5   4   3  12       (-2,  1)    (-1,  1)     (0,  1)     (1,  1)     (2,  1)
@@ -19,11 +19,11 @@ private fun Int.spiralIndexToRingLevel(): Int {
  * 21  22  23---> ...       (-2, -2)    (-1, -2)     (0, -2) -->
  *
  */
-fun Int.spiralIndexToPoint2D(): Point2D {
+fun Int.spiralIndexToPoint(): XYCoordinate {
     if (this < 1)
         throw Exception("Illegal spiral Number")
     if (this == 1)
-        return Point2D(0,0)
+        return XYCoordinate(0,0)
     val ringLevel = this.spiralIndexToRingLevel()
     val ringSquareRoot = 2*ringLevel - 1
     val ro = ringSquareRoot*ringSquareRoot
@@ -32,10 +32,10 @@ fun Int.spiralIndexToPoint2D(): Point2D {
     val rb = lb - (ringSquareRoot-1)
     val ro2 = rb - (ringSquareRoot-1)
     val point = when (this) {
-        in lo until ro -> Point2D(x=this - (ro+lo)/2, y=-(ringLevel - 1))
-        in lb until lo -> Point2D(x=-(ringLevel - 1), y=(lb+lo)/2 - this)
-        in rb until lb -> Point2D(x=(rb+lb)/2 - this, y=+(ringLevel - 1))
-        else -> if (this == ro) Point2D(x=+(ringLevel - 1), y=-(ringLevel - 1)) else Point2D(x=+(ringLevel - 1), y=this - (rb+ro2)/2)
+        in lo until ro -> XYCoordinate(x=this - (ro+lo)/2, y=-(ringLevel - 1))
+        in lb until lo -> XYCoordinate(x=-(ringLevel - 1), y=(lb+lo)/2 - this)
+        in rb until lb -> XYCoordinate(x=(rb+lb)/2 - this, y=+(ringLevel - 1))
+        else -> if (this == ro) XYCoordinate(x=+(ringLevel - 1), y=-(ringLevel - 1)) else XYCoordinate(x=+(ringLevel - 1), y=this - (rb+ro2)/2)
     }
     return point
 }

@@ -2,7 +2,7 @@ package adventofcode2017.december14
 
 import adventofcode2017.PuzzleSolverAbstract
 import adventofcode2017.knotHashEncode
-import tool.coordinate.twodimensional.Pos
+import tool.coordinate.twodimensional.GridPos
 import tool.mylambdas.intersects
 import java.math.BigInteger
 
@@ -15,7 +15,7 @@ class PuzzleSolver(test: Boolean) : PuzzleSolverAbstract(test) {
     private val keyString = if (test) "flqrgnkx" else "hxtvlmkl"
 
     private val usedSquares = (0..127)
-        .flatMap{row->"$keyString-$row".knotHashEncode().hexToBin().mapIndexed{col, ch -> if (ch == '1') Pos(col, row) else null}}
+        .flatMap{row->"$keyString-$row".knotHashEncode().hexToBin().mapIndexed{col, ch -> if (ch == '1') GridPos(col, row) else null}}
         .filterNotNull()
 
     override fun resultPartOne(): Any {
@@ -23,7 +23,7 @@ class PuzzleSolver(test: Boolean) : PuzzleSolverAbstract(test) {
     }
 
     override fun resultPartTwo(): Any {
-        var regions = listOf(emptySet<Pos>())
+        var regions = listOf(emptySet<GridPos>())
         usedSquares.forEach { square ->
             val neighborSet = square.neighbors().toSet()
             regions = regions
