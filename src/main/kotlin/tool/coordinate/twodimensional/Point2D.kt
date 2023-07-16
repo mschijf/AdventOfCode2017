@@ -8,6 +8,40 @@ data class Point2D(val x: Int, val y: Int) {
     private fun leftOf(other: Point2D) = this.x < other.x
     private val ONEDOWN = -1
 
+    private fun Direction.dXY() =
+        when(this) {
+            Direction.DOWN -> Pair(0,ONEDOWN)
+            Direction.UP -> Pair(0,-ONEDOWN)
+            Direction.LEFT -> Pair(-1,0)
+            Direction.RIGHT -> Pair(1,0)
+        }
+
+    private fun WindDirection.dXY() =
+        when(this) {
+            WindDirection.NORTH -> Pair(0,-ONEDOWN)
+            WindDirection.SOUTH -> Pair(0,ONEDOWN)
+            WindDirection.EAST -> Pair(1,0)
+            WindDirection.WEST -> Pair(-1,0)
+            WindDirection.NORTHEAST -> Pair(1,-ONEDOWN)
+            WindDirection.NORTHWEST -> Pair(-1,-ONEDOWN)
+            WindDirection.SOUTHEAST -> Pair(1,ONEDOWN)
+            WindDirection.SOUTHWEST -> Pair(-1,ONEDOWN)
+        }
+
+    companion object {
+        fun of(input: String): Point2D =
+            input
+                .removeSurrounding("<", ">")
+                .removeSurrounding("(", ")")
+                .removeSurrounding("[", "]")
+                .removeSurrounding("{", "}")
+                .split(",").run { Point2D(this[0].trim().toInt(), this[1].trim().toInt()) }
+
+        val origin = Point2D(0,0)
+    }
+
+    override fun toString() = "($x, $y)"
+
     fun plusXY(dx: Int, dy: Int) = Point2D(x+dx, y+dy)
 
     fun plusX(dx: Int) = plusXY(dx, 0)
@@ -35,19 +69,6 @@ data class Point2D(val x: Int, val y: Int) {
 
     fun manhattanDistance(otherPos: Point2D) = (otherPos.x - x).absoluteValue + (otherPos.y - y).absoluteValue
 
-    override fun toString() = "($x, $y)"
-    companion object {
-        fun of(input: String): Point2D =
-            input
-                .removeSurrounding("<", ">")
-                .removeSurrounding("(", ")")
-                .removeSurrounding("[", "]")
-                .removeSurrounding("{", "}")
-                .split(",").run { Point2D(this[0].trim().toInt(), this[1].trim().toInt()) }
-
-        val origin = Point2D(0,0)
-    }
-
     fun directionToOrNull(other: Point2D) =
         if (this.x == other.x) {
             if (this.above(other)) Direction.DOWN else Direction.UP
@@ -71,26 +92,5 @@ data class Point2D(val x: Int, val y: Int) {
         } else {
             null
         }
-
-    private fun Direction.dXY() =
-        when(this) {
-            Direction.DOWN -> Pair(0,ONEDOWN)
-            Direction.UP -> Pair(0,-ONEDOWN)
-            Direction.LEFT -> Pair(-1,0)
-            Direction.RIGHT -> Pair(1,0)
-        }
-
-    private fun WindDirection.dXY() =
-        when(this) {
-            WindDirection.NORTH -> Pair(0,-ONEDOWN)
-            WindDirection.SOUTH -> Pair(0,ONEDOWN)
-            WindDirection.EAST -> Pair(1,0)
-            WindDirection.WEST -> Pair(-1,0)
-            WindDirection.NORTHEAST -> Pair(1,-ONEDOWN)
-            WindDirection.NORTHWEST -> Pair(-1,-ONEDOWN)
-            WindDirection.SOUTHEAST -> Pair(1,ONEDOWN)
-            WindDirection.SOUTHWEST -> Pair(-1,ONEDOWN)
-        }
-
 }
 
