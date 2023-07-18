@@ -17,7 +17,7 @@ class PuzzleSolver(test: Boolean) : PuzzleSolverAbstract(test) {
         val xx = (1..25).associateWith { it.spiralIndexToPoint() }
         (1..25).associateBy { it.spiralIndexToPoint() }.printPoint2dMapAsGrid { "%12s".format(xx[it]!!) }
         val origin = 1.spiralIndexToPoint()
-        return puzzleInput.spiralIndexToPoint().manhattanDistance(origin)
+        return puzzleInput.spiralIndexToPoint().distanceTo(origin)
     }
 
     override fun resultPartTwo(): Any {

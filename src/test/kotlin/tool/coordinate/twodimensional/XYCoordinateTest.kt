@@ -15,9 +15,9 @@ class XYCoordinateTest {
 
     @Test
     fun manhattanDistance() {
-        assertEquals(2, XYCoordinate(0,0).manhattanDistance(XYCoordinate(1,1)) )
-        assertEquals(0, XYCoordinate(0,0).manhattanDistance(XYCoordinate(0,0)) )
-        assertEquals(3, XYCoordinate(0,0).manhattanDistance(XYCoordinate(2,1)) )
+        assertEquals(2, XYCoordinate(0,0).distanceTo(XYCoordinate(1,1)) )
+        assertEquals(0, XYCoordinate(0,0).distanceTo(XYCoordinate(0,0)) )
+        assertEquals(3, XYCoordinate(0,0).distanceTo(XYCoordinate(2,1)) )
     }
 
     @Test

@@ -55,7 +55,7 @@ abstract class Point(open val x: Int, open val y: Int) {
     fun neighbors() = listOf(up(), down(), left(), right())
     fun allWindDirectionNeighbors() = listOf(north(), northeast(), east(), southeast(), south(), southwest(), west(), northwest())
 
-    fun manhattanDistance(other: Point) = (other.x - x).absoluteValue + (other.y - y).absoluteValue
+    fun distanceTo(other: Point) = (other.x - x).absoluteValue + (other.y - y).absoluteValue
 
     fun directionToOrNull(other: Point) =
         if (this.x == other.x) {

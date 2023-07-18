@@ -15,9 +15,9 @@ class GridPosTest {
 
     @Test
     fun manhattanDistance() {
-        assertEquals(2, GridPos(0,0).manhattanDistance(GridPos(1,1)) )
-        assertEquals(0, GridPos(0,0).manhattanDistance(GridPos(0,0)) )
-        assertEquals(3, GridPos(0,0).manhattanDistance(GridPos(2,1)) )
+        assertEquals(2, GridPos(0,0).distanceTo(GridPos(1,1)) )
+        assertEquals(0, GridPos(0,0).distanceTo(GridPos(0,0)) )
+        assertEquals(3, GridPos(0,0).distanceTo(GridPos(2,1)) )
     }
 
     @Test

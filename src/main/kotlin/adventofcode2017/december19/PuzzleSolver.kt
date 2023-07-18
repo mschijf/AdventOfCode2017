@@ -33,7 +33,7 @@ class PuzzleSolver(test: Boolean) : PuzzleSolverAbstract(test) {
      * Om de volgende stap te bepalen, doen we het volgende:
      *   Vanuit de  laatste stap, kijken we welke buren we in de 'maze' hebben (met uitzondering van de plek waar we vandaan komen)
      *   Als we meerdere buren hebben, dan kiezen we degene die overeenkomt met de richting die we aan het lopen waren
-     *       (anders gezegd, die op dezeflde lijn ligt als de lijn tussen het vorige en huige punt)
+     *       (anders gezegd, die op dezelfde lijn ligt als de lijn tussen het vorige en huige punt)
      *   Hebben we maar één buur, dan kiezen we die.
      *   Hebben we geen buur, dan stoppen we met itereren.
      *   De zo bepaalde buur, is de volgende stap en die wordt aan het pad toegevoegd.
