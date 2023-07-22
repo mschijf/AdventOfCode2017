@@ -88,37 +88,30 @@ data class Grid(val points: List<Point>, val size: Int) {
     fun enhance(rules: Map<Square, Square>): Grid {
         val squareSize = if (size % 2 == 0) 2 else 3
 
-        val pointGroups = points.groupBy { posOf(it.x/squareSize, it.y/squareSize) }
-        val pointGroupsExt =
-            (0 until size/squareSize).flatMap{bigX -> (0 until size/squareSize)
-                    .map{bigY -> posOf(bigX, bigY) to pointGroups.getOrDefault(posOf(bigX, bigY), emptyList())}}.toMap()
-        val squares = pointGroupsExt.mapValues { v -> Square(v.value.transpose(-squareSize * v.key.x, -squareSize * v.key.y), squareSize) }
+        //create a map with key the 'big coordinate' and as value the individual Points belonging to that big coordinate
+        val pointGroups = allKeysMapEmpty(squareSize) + points.groupBy { posOf(it.x/squareSize, it.y/squareSize) }
 
+        //transpose each set of points to normalized (i.e. move towards (0,0) ) and turn it into a square
+        val squares = pointGroups.mapValues { v -> Square(v.value.transpose(-squareSize * v.key.x, -squareSize * v.key.y), squareSize) }
+
+        //look for each square in the rules and find the enhanced square
         val enhanced = squares.mapValues { v -> rules[v.value]!! }
 
-        val transposeBack = enhanced.mapValues { v -> v.value.points.transpose(v.value.size*v.key.x, v.value.size*v.key.y)}
+        //transpose each point back to the relative big coordinate position
+        val transposeBack = enhanced.flatMap { entry -> entry.value.points.transpose(entry.value.size*entry.key.x, entry.value.size*entry.key.y)}
 
-        return Grid(transposeBack.values.flatten(), if (size % 2 == 0) 3*size/2 else 4*size/3 )
+        //return as grid
+        return Grid(transposeBack, if (size % 2 == 0) 3*size/2 else 4*size/3 )
     }
+
+    private fun allKeysMapEmpty(squareSize: Int) =
+        (0 until size/squareSize)
+            .flatMap{ x -> (0 until size/squareSize)
+                .map{ y -> Pair(posOf(x, y), emptyList<Point>()) }
+            }
+            .toMap()
 
     private fun List<Point>.transpose(dx: Int, dy: Int) =
         this.map { point -> point.plusXY(dx, dy) }
 
 }
-
-
-//        println(Part(listOf(posOf(0,0)),2).rotateRight())
-//        println(Part(listOf(posOf(1,0)),2).rotateRight())
-//        println(Part(listOf(posOf(1,1)),2).rotateRight())
-//        println(Part(listOf(posOf(0,1)),2).rotateRight())
-//        println()
-//        println(Part(listOf(posOf(0,0)), 3).rotateRight())
-//        println(Part(listOf(posOf(1,0)), 3).rotateRight())
-//        println(Part(listOf(posOf(2,0)), 3).rotateRight())
-//        println(Part(listOf(posOf(2,1)), 3).rotateRight())
-//        println(Part(listOf(posOf(2,2)), 3).rotateRight())
-//        println(Part(listOf(posOf(1,2)), 3).rotateRight())
-//        println(Part(listOf(posOf(0,2)), 3).rotateRight())
-//        println(Part(listOf(posOf(0,1)), 3).rotateRight())
-//        println(Part(listOf(posOf(1,1)), 3).rotateRight())
-//
