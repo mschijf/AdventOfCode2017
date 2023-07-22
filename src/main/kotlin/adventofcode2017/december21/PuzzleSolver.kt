@@ -58,6 +58,8 @@ data class Rule(val left: Square, val right: Square) {
 
 data class Square(val points: List<Point>, val size: Int) {
 
+    private val hashValue = (1 shl (16+size)) +  points.sumOf {p -> 1 shl (size*p.y + p.x) }
+
     private fun rotateRight() = Square(points.map { posOf(-it.y, it.x).plusXY(size-1,0) }, size)
     private fun flip() = Square(points.map{ posOf(size - 1 - it.x, it.y) }, size)
 
@@ -71,16 +73,12 @@ data class Square(val points: List<Point>, val size: Int) {
 
     override fun equals(other: Any?): Boolean {
         return if (other is Square)
-            (size == other.size) && (points.toSet() == other.points.toSet())
+            (hashValue == other.hashValue)
         else
             super.equals(other)
     }
 
-    override fun hashCode(): Int {
-        var result = points.toSet().hashCode()
-        result = 31 * result + size
-        return result
-    }
+    override fun hashCode() = hashValue
 
     companion object {
         fun of(rawInput: String): Square {
