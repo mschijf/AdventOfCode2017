@@ -12,17 +12,17 @@ fun main() {
 
 class PuzzleSolver(test: Boolean) : PuzzleSolverAbstract(test) {
 
-    private val infectedSet = mutableSetOf<Point>()
-    private val weakenedSet = mutableSetOf<Point>()
-    private val flaggedSet = mutableSetOf<Point>()
+    private val gridMap = mutableMapOf<Point, InfectionType>()
 
     private var currentPos = posOf(inputLines.size/2, inputLines.first().length/2)
     private var currentDir = Direction.UP
 
     private fun initialState() {
-        infectedSet += inputLines
+        gridMap.clear()
+        gridMap += inputLines
             .flatMapIndexed{y, row -> row.mapIndexed { x, cell -> if (cell == '#') posOf(x,y) else null }}
             .filterNotNull()
+            .associateWith { InfectionType.INFECTED  }
 
         currentPos = posOf(inputLines.size/2, inputLines.first().length/2)
         currentDir = Direction.UP
@@ -38,31 +38,49 @@ class PuzzleSolver(test: Boolean) : PuzzleSolverAbstract(test) {
         return (1..10_000_000).sumOf { burstPartTwo() }
     }
 
-    private fun printGrid() {
-        Pair(posOf(-3,-3), posOf(5,5)).printGrid { (if (it == currentPos) "[" else " ") + (if (it in infectedSet) "#" else ".") + (if (it == currentPos) "]" else " ")}
-        println()
-    }
-
     private fun burstPartOne(): Int {
-        currentDir = if (currentPos in infectedSet) currentDir.rotateRight() else currentDir.rotateLeft()
-        val infected = (currentPos in infectedSet)
-        if (infected)  {
-            infectedSet -= currentPos
-        } else
-            infectedSet += currentPos
-        currentPos = currentPos.moveOneStep(currentDir)
-        return if (!infected) 1 else 0
-    }
-
-    private fun burstPartTwo(): Int {
         var infectionsCaused = 0
-        when (currentPos) {
-            in weakenedSet -> {currentDir = currentDir; weakenedSet -= currentPos; infectedSet += currentPos; infectionsCaused = 1}
-            in infectedSet -> {currentDir = currentDir.rotateRight(); infectedSet -= currentPos; flaggedSet += currentPos }
-            in flaggedSet -> {currentDir = currentDir.opposite(); flaggedSet -= currentPos /* cleanedSet++; */ }
-            else /* cleaned */ -> {currentDir = currentDir.rotateLeft(); /* cleanedSet--; */ weakenedSet += currentPos }
+        when (gridMap.getOrDefault(currentPos, InfectionType.CLEAN)) {
+            InfectionType.INFECTED -> {
+                currentDir = currentDir.rotateRight()
+                gridMap[currentPos] = InfectionType.CLEAN
+            }
+            else -> {
+                currentDir = currentDir.rotateLeft()
+                gridMap[currentPos] = InfectionType.INFECTED
+                infectionsCaused = 1
+            }
         }
         currentPos = currentPos.moveOneStep(currentDir)
         return infectionsCaused
     }
+
+    private fun burstPartTwo(): Int {
+        var infectionsCaused = 0
+        when (gridMap.getOrDefault(currentPos, InfectionType.CLEAN)) {
+            InfectionType.WEAKENED -> {
+                currentDir = currentDir
+                gridMap[currentPos] = InfectionType.INFECTED
+                infectionsCaused = 1
+            }
+            InfectionType.INFECTED -> {
+                currentDir = currentDir.rotateRight()
+                gridMap[currentPos] = InfectionType.FLAGGED
+            }
+            InfectionType.FLAGGED -> {
+                currentDir = currentDir.opposite()
+                gridMap[currentPos] = InfectionType.CLEAN
+            }
+            else -> {
+                currentDir = currentDir.rotateLeft()
+                gridMap[currentPos] = InfectionType.WEAKENED
+            }
+        }
+        currentPos = currentPos.moveOneStep(currentDir)
+        return infectionsCaused
+    }
+}
+
+enum class InfectionType {
+    CLEAN, WEAKENED, INFECTED, FLAGGED
 }
