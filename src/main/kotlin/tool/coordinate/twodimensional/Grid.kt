@@ -1,6 +1,6 @@
 package tool.coordinate.twodimensional
 
-fun <T> Map<GridPos, T>.printAsGrid(default: String=".", itemAsString: (T)->String) {
+fun <T> Map<Point, T>.printAsGrid(default: String=".", itemAsString: (T)->String) {
     val maxX = this.keys.maxByOrNull { it.x }?.x ?: -1
     val maxY = this.keys.maxByOrNull { it.y }?.y ?: -1
 
@@ -17,7 +17,7 @@ fun <T> Map<GridPos, T>.printAsGrid(default: String=".", itemAsString: (T)->Stri
     }
 }
 
-fun Collection<GridPos>.printAsGrid(itemAsString: (GridPos)->String) {
+fun Collection<Point>.printAsGrid(itemAsString: (Point)->String) {
     val minX = this.minByOrNull { it.x }?.x ?: -1
     val minY = this.minByOrNull { it.y }?.y ?: -1
     val maxX = this.maxByOrNull { it.x }?.x ?: -1
@@ -32,7 +32,7 @@ fun Collection<GridPos>.printAsGrid(itemAsString: (GridPos)->String) {
     }
 }
 
-fun Pair<GridPos, GridPos>.printGrid(itemAsString: (GridPos)->String) {
+fun Pair<GridPos, GridPos>.printGrid(itemAsString: (Point)->String) {
     val minX = this.first.x
     val minY = this.first.y
     val maxX = this.second.x
@@ -49,7 +49,7 @@ fun Pair<GridPos, GridPos>.printGrid(itemAsString: (GridPos)->String) {
 
 
 
-fun Set<GridPos>.printAsGrid(defaultEmpty: String=".", defaultAvailable: String="#") {
+fun Set<Point>.printAsGrid(defaultEmpty: String=".", defaultAvailable: String="#") {
     val minX = this.minByOrNull { it.x }?.x ?: -1
     val minY = this.minByOrNull { it.y }?.y ?: -1
     val maxX = this.maxByOrNull { it.x }?.x ?: -1
@@ -95,6 +95,17 @@ fun <T> List<List<T>>.printGridIndexed(itemAsString: (row:Int, col:Int, gridValu
     for (row in this.indices) {
         for (col in this[row].indices) {
             print(itemAsString(row, col, this[row][col]))
+        }
+        println()
+    }
+}
+
+
+fun Collection<Point>.printAsGrid(rowRange: IntRange, colRange: IntRange, defaultEmpty: String=".", defaultAvailable: String="#") {
+    (rowRange).forEach { y ->
+        (colRange).forEach { x ->
+            val field = posOf(x,y)
+            print(if (field in this) defaultAvailable else defaultEmpty)
         }
         println()
     }
