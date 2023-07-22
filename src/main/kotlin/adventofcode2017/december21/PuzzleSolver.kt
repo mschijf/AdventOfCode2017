@@ -10,10 +10,9 @@ fun main() {
 }
 
 
-// 149 is not good
 class PuzzleSolver(test: Boolean) : PuzzleSolverAbstract(test) {
 
-    private val ruleList = inputLines.map{Rule.of(it)}
+    private val ruleMap = inputLines.flatMap{it.toListOfRulesForAllVariants()}.associate { rule -> rule.first to rule.second }
     private val start = Grid(Square.of(".#./..#/###").points, 3)
 
     override fun resultPartOne(): Any {
@@ -21,7 +20,7 @@ class PuzzleSolver(test: Boolean) : PuzzleSolverAbstract(test) {
         current.print()
 
         repeat(5) {
-            current = current.enhance(ruleList)
+            current = current.enhance(ruleMap)
             current.print()
         }
 
@@ -31,7 +30,7 @@ class PuzzleSolver(test: Boolean) : PuzzleSolverAbstract(test) {
     override fun resultPartTwo(): Any {
         var current = start
         repeat(18) {
-            current = current.enhance(ruleList)
+            current = current.enhance(ruleMap)
         }
         return current.points.size
     }
@@ -41,20 +40,14 @@ class PuzzleSolver(test: Boolean) : PuzzleSolverAbstract(test) {
         println()
     }
 
-}
-
-data class Rule(val left: Square, val right: Square) {
-    fun isApplicableFor(square: Square) =
-        left == square
-
-    companion object {
-        fun of(rawInput: String): Rule {
-            val left = Square.of(rawInput.substringBefore(" => "))
-            val right = Square.of(rawInput.substringAfter(" => "))
-            return Rule(left, right)
-        }
+    private fun String.toListOfRulesForAllVariants(): List<Pair<Square, Square>> {
+        val left = Square.of(this.substringBefore(" => "))
+        val right = Square.of(this.substringAfter(" => "))
+        return left.allVariants().map{Pair(it, right)}
     }
+
 }
+
 
 data class Square(val points: List<Point>, val size: Int) {
 
@@ -92,16 +85,16 @@ data class Square(val points: List<Point>, val size: Int) {
 
 data class Grid(val points: List<Point>, val size: Int) {
 
-    fun enhance(ruleList: List<Rule>): Grid {
+    fun enhance(rules: Map<Square, Square>): Grid {
         val squareSize = if (size % 2 == 0) 2 else 3
 
         val pointGroups = points.groupBy { posOf(it.x/squareSize, it.y/squareSize) }
         val pointGroupsExt =
-            (0 until size/squareSize).flatMap{bigX -> (0 until size/squareSize).map{bigY -> posOf(bigX, bigY)}}
-                    .associateWith {pos -> pointGroups.getOrDefault(pos, emptyList())}
+            (0 until size/squareSize).flatMap{bigX -> (0 until size/squareSize)
+                    .map{bigY -> posOf(bigX, bigY) to pointGroups.getOrDefault(posOf(bigX, bigY), emptyList())}}.toMap()
         val squares = pointGroupsExt.mapValues { v -> Square(v.value.transpose(-squareSize * v.key.x, -squareSize * v.key.y), squareSize) }
 
-        val enhanced = squares.mapValues { v -> ruleList.matchingRule(v.value).right }
+        val enhanced = squares.mapValues { v -> rules[v.value]!! }
 
         val transposeBack = enhanced.mapValues { v -> v.value.points.transpose(v.value.size*v.key.x, v.value.size*v.key.y)}
 
@@ -111,10 +104,6 @@ data class Grid(val points: List<Point>, val size: Int) {
     private fun List<Point>.transpose(dx: Int, dy: Int) =
         this.map { point -> point.plusXY(dx, dy) }
 
-    private fun List<Rule>.matchingRule(forSquare: Square): Rule {
-        val variants = forSquare.allVariants()
-        return this.first {rule -> variants.any { variant -> rule.isApplicableFor(variant) }}
-    }
 }
 
 
