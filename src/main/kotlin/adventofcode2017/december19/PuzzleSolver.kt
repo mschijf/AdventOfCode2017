@@ -2,7 +2,7 @@ package adventofcode2017.december19
 
 import adventofcode2017.PuzzleSolverAbstract
 import tool.coordinate.twodimensional.Point
-import tool.coordinate.twodimensional.gridPosOf
+import tool.coordinate.twodimensional.posOf
 
 fun main() {
     PuzzleSolver(test = false).showResult()
@@ -11,7 +11,7 @@ fun main() {
 class PuzzleSolver(test: Boolean) : PuzzleSolverAbstract(test) {
 
     private val maze = inputLines
-        .flatMapIndexed { y: Int, line: String -> line.mapIndexed { x, c -> gridPosOf(x, y) to c } }
+        .flatMapIndexed { y: Int, line: String -> line.mapIndexed { x, c -> posOf(x, y) to c } }
         .toMap()
         .filterValues { it != ' ' }
     private val mazeCoordinates = maze.keys

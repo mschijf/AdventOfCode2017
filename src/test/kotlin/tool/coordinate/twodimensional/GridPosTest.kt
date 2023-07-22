@@ -10,7 +10,7 @@ class GridPosTest {
     fun makePos() {
         val x = GridPos.of("<1,2>")
         assertEquals(GridPos(1,2), x )
-        assertEquals(gridPosOf(1,2), x)
+        assertEquals(posOf(1,2), x)
     }
 
     @Test
