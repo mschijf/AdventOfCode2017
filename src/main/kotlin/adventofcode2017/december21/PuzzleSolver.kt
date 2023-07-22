@@ -1,10 +1,7 @@
 package adventofcode2017.december21
 
 import adventofcode2017.PuzzleSolverAbstract
-import tool.coordinate.twodimensional.Point
-import tool.coordinate.twodimensional.posOf
-import tool.coordinate.twodimensional.posRange
-import tool.coordinate.twodimensional.printAsGrid
+import tool.coordinate.twodimensional.*
 
 fun main() {
     PuzzleSolver(test=false).showResult()
@@ -37,7 +34,7 @@ class PuzzleSolver(test: Boolean) : PuzzleSolverAbstract(test) {
     }
 
     private fun Grid.print() {
-        this.points.printAsGrid(rowRange = 0 until this.size, colRange = 0 until this.size, ".", "#")
+        Pair(posOf(0,0), posOf(this.size-1, this.size-1)).printGrid { if (it in this.points) "#" else "." }
         println()
     }
 
