@@ -2,7 +2,8 @@ package adventofcode2017.december03
 
 import adventofcode2017.PuzzleSolverAbstract
 import tool.coordinate.spiral.spiralIndexToPoint
-import tool.coordinate.twodimensional.XYCoordinate
+import tool.coordinate.twodimensional.Point
+import tool.coordinate.twodimensional.printAsGrid
 import tool.coordinate.twodimensional.printPoint2dMapAsGrid
 
 fun main() {
@@ -15,13 +16,13 @@ class PuzzleSolver(test: Boolean) : PuzzleSolverAbstract(test) {
 
     override fun resultPartOne(): Any {
         val xx = (1..25).associateWith { it.spiralIndexToPoint() }
-        (1..25).associateBy { it.spiralIndexToPoint() }.printPoint2dMapAsGrid { "%12s".format(xx[it]!!) }
+        (1..25).associateBy { it.spiralIndexToPoint()  }.printPoint2dMapAsGrid { "%25s".format(xx[it]!!) }
         val origin = 1.spiralIndexToPoint()
         return puzzleInput.spiralIndexToPoint().distanceTo(origin)
     }
 
     override fun resultPartTwo(): Any {
-        val set = mutableMapOf<XYCoordinate, Int>()
+        val set = mutableMapOf<Point, Int>()
         var newSum = 1
         set[1.spiralIndexToPoint()] = newSum
         var i = 2

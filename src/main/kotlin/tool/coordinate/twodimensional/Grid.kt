@@ -1,12 +1,14 @@
 package tool.coordinate.twodimensional
 
 fun <T> Map<Point, T>.printAsGrid(default: String=".", itemAsString: (T)->String) {
+    val minX = this.keys.minByOrNull { it.x }?.x ?: -1
+    val minY = this.keys.minByOrNull { it.y }?.y ?: -1
     val maxX = this.keys.maxByOrNull { it.x }?.x ?: -1
     val maxY = this.keys.maxByOrNull { it.y }?.y ?: -1
 
-    (0..maxY).forEach { y ->
-        (0..maxX).forEach { x ->
-            val field = GridPos(x,y)
+    (maxY downTo minY).forEach { y ->
+        (minX..maxX).forEach { x ->
+            val field = posOf(x,y)
             if (this.contains(field)) {
                 print(itemAsString(this[field]!!))
             } else {
@@ -17,6 +19,26 @@ fun <T> Map<Point, T>.printAsGrid(default: String=".", itemAsString: (T)->String
     }
 }
 
+fun <T> Map<Point, T>.printPoint2dMapAsGrid(default: String=".", itemAsString: (T)->String) {
+    val minX = this.keys.minByOrNull { it.x }?.x ?: -1
+    val minY = this.keys.minByOrNull { it.y }?.y ?: -1
+    val maxX = this.keys.maxByOrNull { it.x }?.x ?: -1
+    val maxY = this.keys.maxByOrNull { it.y }?.y ?: -1
+
+    (maxY downTo minY).forEach { y ->
+        (minX..maxX).forEach { x ->
+            val field = XYCoordinate(x,y)
+            if (this.contains(field)) {
+                print(itemAsString(this[field]!!))
+            } else {
+                print(default)
+            }
+        }
+        println()
+    }
+}
+
+
 fun Collection<Point>.printAsGrid(itemAsString: (Point)->String) {
     val minX = this.minByOrNull { it.x }?.x ?: -1
     val minY = this.minByOrNull { it.y }?.y ?: -1
@@ -25,14 +47,14 @@ fun Collection<Point>.printAsGrid(itemAsString: (Point)->String) {
 
     (minY..maxY).forEach { y ->
         (minX..maxX).forEach { x ->
-            val field = GridPos(x,y)
+            val field = posOf(x,y)
             print(itemAsString(field))
         }
         println()
     }
 }
 
-fun Pair<GridPos, GridPos>.printGrid(itemAsString: (Point)->String) {
+fun Pair<Point, Point>.printGrid(itemAsString: (Point)->String) {
     val minX = this.first.x
     val minY = this.first.y
     val maxX = this.second.x
@@ -40,7 +62,7 @@ fun Pair<GridPos, GridPos>.printGrid(itemAsString: (Point)->String) {
 
     (minY..maxY).forEach { y ->
         (minX..maxX).forEach { x ->
-            val field = GridPos(x,y)
+            val field = posOf(x,y)
             print(itemAsString(field))
         }
         println()
@@ -57,30 +79,11 @@ fun Set<Point>.printAsGrid(defaultEmpty: String=".", defaultAvailable: String="#
 
     (minY..maxY).forEach { y ->
         (minX..maxX).forEach { x ->
-            val field = GridPos(x,y)
+            val field = posOf(x,y)
             if (this.contains(field)) {
                 print(defaultAvailable)
             } else {
                 print(defaultEmpty)
-            }
-        }
-        println()
-    }
-}
-
-fun <T> Map<XYCoordinate, T>.printPoint2dMapAsGrid(default: String=".", itemAsString: (T)->String) {
-    val minX = this.keys.minByOrNull { it.x }?.x ?: -1
-    val minY = this.keys.minByOrNull { it.y }?.y ?: -1
-    val maxX = this.keys.maxByOrNull { it.x }?.x ?: -1
-    val maxY = this.keys.maxByOrNull { it.y }?.y ?: -1
-
-    (maxY downTo minY).forEach { y ->
-        (minX..maxX).forEach { x ->
-            val field = XYCoordinate(x,y)
-            if (this.contains(field)) {
-                print(itemAsString(this[field]!!))
-            } else {
-                print(default)
             }
         }
         println()
