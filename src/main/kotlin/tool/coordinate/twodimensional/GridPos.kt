@@ -17,6 +17,8 @@ data class GridPos private constructor(override val x: Int, override val y: Int)
 
     override fun plusXY(dx: Int, dy: Int) = posOf(x+dx, y+dy)
 
+    override fun toString() = "($x, $y)"
+
     companion object {
         fun of(x: Int, y: Int): Point = GridPos(x,y)
         fun of(input: String): Point = XYPair.fromString(input).run { GridPos(this.x, this.y) }

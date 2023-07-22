@@ -8,6 +8,7 @@ data class XYCoordinate private constructor(override val x: Int, override val y:
     override val ONEDOWN = -1
 
     override fun plusXY(dx: Int, dy: Int) = xyCoordinateOf(x+dx, y+dy)
+    override fun toString() = "($x, $y)"
 
     companion object {
         fun of(x: Int, y: Int): Point = XYCoordinate(x,y)

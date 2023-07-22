@@ -30,8 +30,6 @@ abstract class Point(open val x: Int, open val y: Int) {
             WindDirection.SOUTHWEST -> XYPair(-1,ONEDOWN)
         }
 
-    override fun toString() = "($x, $y)"
-
     fun plusX(dx: Int) = plusXY(dx, 0)
     fun plusY(dy: Int) = plusXY(0, dy)
 
