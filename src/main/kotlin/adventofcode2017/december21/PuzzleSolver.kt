@@ -3,6 +3,7 @@ package adventofcode2017.december21
 import adventofcode2017.PuzzleSolverAbstract
 import tool.coordinate.twodimensional.Point
 import tool.coordinate.twodimensional.posOf
+import tool.coordinate.twodimensional.posRange
 import tool.coordinate.twodimensional.printAsGrid
 
 fun main() {
@@ -105,11 +106,7 @@ data class Grid(val points: List<Point>, val size: Int) {
     }
 
     private fun allKeysMapEmpty(squareSize: Int) =
-        (0 until size/squareSize)
-            .flatMap{ x -> (0 until size/squareSize)
-                .map{ y -> Pair(posOf(x, y), emptyList<Point>()) }
-            }
-            .toMap()
+        posRange(posOf(0,0), posOf(size/squareSize-1, size/squareSize-1)).associateWith { emptyList<Point>() }
 
     private fun List<Point>.transpose(dx: Int, dy: Int) =
         this.map { point -> point.plusXY(dx, dy) }
