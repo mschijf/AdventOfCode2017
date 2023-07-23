@@ -23,24 +23,19 @@ class Day24(test: Boolean) : PuzzleSolverAbstract(test) {
         return if (candidates.isEmpty())
             0
         else
-            candidates.maxOf { candidate ->  candidate.value() + (this-candidate).solveStrongest(candidate.otherPortType(openConnection))}
+            candidates.maxOf { candidate ->  candidate.value() + (this-candidate).solveStrongest(candidate.otherPort(openConnection))}
     }
 
-    private fun Set<Component>.solveLongest(openConnection: Int, bridgeSet: Set<Component> = emptySet()): Pair<Int, Int> {
+    private fun Set<Component>.solveLongest(openConnection: Int, soFar: Pair<Int, Int> = Pair(0,0)): Pair<Int, Int> {
         val candidates = this.findCandidates(openConnection)
         return if (candidates.isEmpty())
-            Pair(bridgeSet.size, bridgeSet.sumOf { it.value() })
+            soFar
         else {
-            candidates.maxOfWith(pairComparator) { candidate -> (this - candidate).solveLongest(candidate.otherPortType(openConnection), bridgeSet + candidate) }
-
-//            var best = Pair(-1, -1)
-//            candidates.forEach { candidate ->
-//                val tmp = (this - candidate).solveLongest(candidate.otherPortType(openConnection), bridgeSet+candidate)
-//                if ( tmp.isBetter(best) ) {
-//                    best = tmp
-//                }
-//            }
-//            return best
+            candidates.maxOfWith(pairComparator) { candidate ->
+                (this - candidate).solveLongest(
+                    candidate.otherPort(openConnection),
+                    Pair(soFar.first+1, soFar.second+candidate.value()))
+            }
         }
     }
 
@@ -62,7 +57,7 @@ data class Component(private val id: Int, val port1: Int, val port2: Int) {
     fun hasPortType(aPort: Int) =
         (port1 == aPort || port2 == aPort)
 
-    fun otherPortType(aPort: Int) =
+    fun otherPort(aPort: Int) =
         when (aPort) {
             port1 -> port2
             port2 -> port1
