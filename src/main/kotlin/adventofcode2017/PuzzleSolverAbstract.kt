@@ -36,11 +36,13 @@ abstract class PuzzleSolverAbstract (
     }
 
     private fun getDayOfMonthFromSubClassName(): Int {
-        val className = this.javaClass.name
-        val dayOfMonth = if (className.contains("Day")) {
-            className.substringAfter("Day").take(2)
-        } else {
+        val className = this.javaClass.name.lowercase()
+        val dayOfMonth = if (className.contains("day")) {
+            className.substringAfter("day").take(2)
+        } else if (className.contains("december")) {
             className.substringAfter("december").take(2)
+        } else {
+            className.takeLast(2)
         }
         return dayOfMonth.toInt()
     }
