@@ -30,7 +30,8 @@ abstract class PuzzleSolverAbstract (
         val startTime = System.currentTimeMillis()
         val result = getResult()
         val timePassed = System.currentTimeMillis() - startTime
-        print("Result part $puzzlePart: $result (after ${timePassed / 1000}.${timePassed % 1000} sec)")
+        print("Result part $puzzlePart: $result (after %d.%03d sec)".format(timePassed / 1000, timePassed % 1000))
+
         if (overriddenInput) println("<== Overridden input") else println()
     }
 
