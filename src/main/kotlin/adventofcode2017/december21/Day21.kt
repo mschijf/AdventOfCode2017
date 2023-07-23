@@ -34,7 +34,7 @@ class Day21(test: Boolean) : PuzzleSolverAbstract(test) {
     }
 
     private fun Grid.print() {
-        Pair(posOf(0,0), posOf(this.size-1, this.size-1)).printGrid { if (it in this.points) "#" else "." }
+        Pair(pos(0,0), pos(this.size-1, this.size-1)).printGrid { if (it in this.points) "#" else "." }
         println()
     }
 
@@ -51,8 +51,8 @@ data class Square(val points: List<Point>, val size: Int) {
 
     private val hashValue = (1 shl (16+size)) +  points.sumOf {p -> 1 shl (size*p.y + p.x) }
 
-    private fun rotateRight() = Square(points.map { posOf(-it.y, it.x).plusXY(size-1,0) }, size)
-    private fun flip() = Square(points.map{ posOf(size - 1 - it.x, it.y) }, size)
+    private fun rotateRight() = Square(points.map { pos(-it.y, it.x).plusXY(size-1,0) }, size)
+    private fun flip() = Square(points.map{ pos(size - 1 - it.x, it.y) }, size)
 
     fun allVariants() =
         listOf(
@@ -75,7 +75,7 @@ data class Square(val points: List<Point>, val size: Int) {
         fun of(rawInput: String): Square {
             val rows = rawInput.split("/")
             return Square(
-                rows.flatMapIndexed { y, s -> s.mapIndexed { x, c -> if (c == '#') posOf(x, y) else null }.filterNotNull() },
+                rows.flatMapIndexed { y, s -> s.mapIndexed { x, c -> if (c == '#') pos(x, y) else null }.filterNotNull() },
                 rows.size)
         }
     }
@@ -87,7 +87,7 @@ data class Grid(val points: List<Point>, val size: Int) {
         val squareSize = if (size % 2 == 0) 2 else 3
 
         //create a map with key the 'big coordinate' and as value the individual Points belonging to that big coordinate
-        val pointGroups = allKeysMapEmpty(squareSize) + points.groupBy { posOf(it.x/squareSize, it.y/squareSize) }
+        val pointGroups = allKeysMapEmpty(squareSize) + points.groupBy { pos(it.x/squareSize, it.y/squareSize) }
 
         //transpose each set of points to normalized (i.e. move towards (0,0) ) and turn it into a square
         val squares = pointGroups.mapValues { v -> Square(v.value.transpose(-squareSize * v.key.x, -squareSize * v.key.y), squareSize) }
@@ -103,7 +103,7 @@ data class Grid(val points: List<Point>, val size: Int) {
     }
 
     private fun allKeysMapEmpty(squareSize: Int) =
-        posRange(posOf(0,0), posOf(size/squareSize-1, size/squareSize-1)).associateWith { emptyList<Point>() }
+        posRange(pos(0,0), pos(size/squareSize-1, size/squareSize-1)).associateWith { emptyList<Point>() }
 
     private fun List<Point>.transpose(dx: Int, dy: Int) =
         this.map { point -> point.plusXY(dx, dy) }

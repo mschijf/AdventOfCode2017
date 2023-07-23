@@ -2,16 +2,16 @@ package tool.coordinate.twodimensional
 
 import kotlin.math.absoluteValue
 
-fun posOf(x: Int, y: Int) = Point.of(gridOrientation = true, x,y)
-fun posOf(raw:String) = Point.of(gridOrientation = true, raw)
+fun pos(x: Int, y: Int) = Point.of(gridOrientation = true, x,y)
+fun pos(raw:String) = Point.of(gridOrientation = true, raw)
 
-fun xyCoordinateOf(x: Int, y: Int) = Point.of(gridOrientation = false, x,y)
-fun xyCoordinateOf(raw:String) = Point.of(gridOrientation = false, raw)
+fun xyCoordinate(x: Int, y: Int) = Point.of(gridOrientation = false, x,y)
+fun xyCoordinate(raw:String) = Point.of(gridOrientation = false, raw)
 
 fun posRange(minPos: Point, maxPos: Point) = sequence<Point> {
     (minPos.x .. maxPos.x).forEach { x ->
         (minPos.y .. maxPos.y).forEach { y ->
-            yield(posOf(x,y))
+            yield(pos(x,y))
         }
     }
 }

@@ -3,7 +3,7 @@ package adventofcode2017.december14
 import adventofcode2017.PuzzleSolverAbstract
 import adventofcode2017.knotHashEncode
 import tool.coordinate.twodimensional.Point
-import tool.coordinate.twodimensional.posOf
+import tool.coordinate.twodimensional.pos
 import tool.mylambdas.intersects
 import java.math.BigInteger
 
@@ -16,7 +16,7 @@ class Day14(test: Boolean) : PuzzleSolverAbstract(test) {
     private val keyString = if (test) "flqrgnkx" else "hxtvlmkl"
 
     private val usedSquares = (0..127)
-        .flatMap{row->"$keyString-$row".knotHashEncode().hexToBin().mapIndexed{col, ch -> if (ch == '1') posOf(col, row) else null}}
+        .flatMap{row->"$keyString-$row".knotHashEncode().hexToBin().mapIndexed{col, ch -> if (ch == '1') pos(col, row) else null}}
         .filterNotNull()
 
     override fun resultPartOne(): Any {

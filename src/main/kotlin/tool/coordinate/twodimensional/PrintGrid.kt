@@ -6,14 +6,14 @@ private fun Collection<Point>.yRange(gridOrientation: Boolean): IntProgression {
     return if (gridOrientation) (minY .. maxY) else (maxY downTo minY)
 }
 
-private fun Collection<Point>.xRange(gridOrientation: Boolean=true): IntProgression {
+private fun Collection<Point>.xRange(gridOrientation: Boolean): IntProgression {
     val minX = this.minByOrNull { it.x }?.x ?: -1
     val maxX = this.maxByOrNull { it.x }?.x ?: -1
     return (minX .. maxX)
 }
 
 private fun newField(gridOrientation: Boolean, x: Int, y: Int): Point =
-    if (gridOrientation) posOf(x,y) else xyCoordinateOf(x,y)
+    if (gridOrientation) pos(x,y) else xyCoordinate(x,y)
 
 fun <T> Map<Point, T>.printAsGrid(default: String=".", itemAsString: (T)->String) {
     if (this.isEmpty())

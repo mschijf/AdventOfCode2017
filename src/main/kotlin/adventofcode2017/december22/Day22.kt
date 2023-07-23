@@ -3,7 +3,7 @@ package adventofcode2017.december22
 import adventofcode2017.PuzzleSolverAbstract
 import tool.coordinate.twodimensional.Direction
 import tool.coordinate.twodimensional.Point
-import tool.coordinate.twodimensional.posOf
+import tool.coordinate.twodimensional.pos
 
 fun main() {
     Day22(test=false).showResult()
@@ -13,17 +13,17 @@ class Day22(test: Boolean) : PuzzleSolverAbstract(test) {
 
     private val gridMap = mutableMapOf<Point, InfectionType>()
 
-    private var currentPos = posOf(inputLines.size/2, inputLines.first().length/2)
+    private var currentPos = pos(inputLines.size/2, inputLines.first().length/2)
     private var currentDir = Direction.UP
 
     private fun initialState() {
         gridMap.clear()
         gridMap += inputLines
-            .flatMapIndexed{y, row -> row.mapIndexed { x, cell -> if (cell == '#') posOf(x,y) else null }}
+            .flatMapIndexed{y, row -> row.mapIndexed { x, cell -> if (cell == '#') pos(x,y) else null }}
             .filterNotNull()
             .associateWith { InfectionType.INFECTED  }
 
-        currentPos = posOf(inputLines.size/2, inputLines.first().length/2)
+        currentPos = pos(inputLines.size/2, inputLines.first().length/2)
         currentDir = Direction.UP
     }
 
