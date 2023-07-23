@@ -15,34 +15,21 @@ class Day24(test: Boolean) : PuzzleSolverAbstract(test) {
     }
 
     override fun resultPartTwo(): Any {
-        return componentSet.solveLongest(0).second
+        return componentSet.solveLongest(0).strength
     }
 
     private fun Set<Component>.solveStrongest(openConnection: Int): Int {
-        val candidates = this.findCandidates(openConnection)
-        return if (candidates.isEmpty())
-            0
-        else
-            candidates.maxOf { candidate ->  candidate.value() + (this-candidate).solveStrongest(candidate.otherPort(openConnection))}
+        return this.findCandidates(openConnection)
+            .maxOfOrNull { candidate ->
+                candidate.strength() + (this-candidate).solveStrongest(candidate.otherPort(openConnection))
+            } ?: 0
     }
 
-    private fun Set<Component>.solveLongest(openConnection: Int): Pair<Int, Int> {
-        val candidates = this.findCandidates(openConnection)
-        return if (candidates.isEmpty())
-            Pair(0,0)
-        else {
-            candidates.maxOfWith(pairComparator) { candidate ->
-                (this - candidate).solveLongest(candidate.otherPort(openConnection)).let { Pair(it.first+1, it.second+candidate.value()) }
-            }
-        }
-    }
-
-    private val pairComparator =  Comparator<Pair<Int, Int>> { a, b ->
-        when {
-            (a == b) -> 0
-            (a.first > b.first || a.first == b.first && a.second > b.second) -> 1
-            else -> -1
-        }
+    private fun Set<Component>.solveLongest(openConnection: Int): Info {
+        return this.findCandidates(openConnection)
+            .maxOfOrNull { cand ->
+                (this - cand).solveLongest(cand.otherPort(openConnection)).let { Info(it.length+1, it.strength+cand.strength()) }
+            } ?: Info(0,0)
     }
 
     private fun Set<Component>.findCandidates(openConnection: Int): List<Component> {
@@ -62,6 +49,15 @@ data class Component(private val id: Int, val port1: Int, val port2: Int) {
             else -> throw Exception("Oh oh")
         }
 
-    fun value() = port1 + port2
+    fun strength() = port1 + port2
 }
 
+data class Info(val length: Int, val strength: Int): Comparable<Info> {
+    override fun compareTo(other: Info): Int {
+        return when {
+            (this == other) -> 0
+            (this.length > other.length || this.length == other.length && this.strength > other.strength) -> 1
+            else -> -1
+        }
+    }
+}
