@@ -2,33 +2,53 @@ package tool.coordinate.twodimensional
 
 import kotlin.math.absoluteValue
 
-abstract class Point(open val x: Int, open val y: Int) {
+fun posOf(x: Int, y: Int) = Point.of(gridOrientation = true, x,y)
+fun posOf(raw:String) = Point.of(gridOrientation = true, raw)
 
-    abstract fun above(other: Point): Boolean
-    fun leftOf(other: Point) = this.x < other.x
+fun xyCoordinateOf(x: Int, y: Int) = Point.of(gridOrientation = false, x,y)
+fun xyCoordinateOf(raw:String) = Point.of(gridOrientation = false, raw)
 
-    protected abstract val ONEDOWN: Int
-    abstract fun plusXY(dx: Int, dy: Int): Point
+fun posRange(minPos: Point, maxPos: Point) = sequence<Point> {
+    (minPos.x .. maxPos.x).forEach { x ->
+        (minPos.y .. maxPos.y).forEach { y ->
+            yield(posOf(x,y))
+        }
+    }
+}
+
+data class Point private constructor(
+    val gridOrientation: Boolean = true,
+    val x: Int, val y: Int) {
+
+    override fun toString() = "($x, $y)"
+
+    private fun above(other: Point) = if (gridOrientation) this.y < other.y else this.y > other.y
+    private fun leftOf(other: Point) = this.x < other.x
+    private fun oneDown() = if (gridOrientation) 1 else -1
+    private fun oneUp() = -oneDown()
 
     private fun Direction.dXY() =
         when(this) {
-            Direction.DOWN -> XYPair(0,ONEDOWN)
-            Direction.UP -> XYPair(0,-ONEDOWN)
+            Direction.DOWN -> XYPair(0, oneDown())
+            Direction.UP -> XYPair(0, oneUp())
             Direction.LEFT -> XYPair(-1,0)
             Direction.RIGHT -> XYPair(1,0)
         }
 
     private fun WindDirection.dXY() =
         when(this) {
-            WindDirection.NORTH -> XYPair(0,-ONEDOWN)
-            WindDirection.SOUTH -> XYPair(0,ONEDOWN)
+            WindDirection.NORTH -> XYPair(0,oneUp())
+            WindDirection.SOUTH -> XYPair(0,oneDown())
             WindDirection.EAST -> XYPair(1,0)
             WindDirection.WEST -> XYPair(-1,0)
-            WindDirection.NORTHEAST -> XYPair(1,-ONEDOWN)
-            WindDirection.NORTHWEST -> XYPair(-1,-ONEDOWN)
-            WindDirection.SOUTHEAST -> XYPair(1,ONEDOWN)
-            WindDirection.SOUTHWEST -> XYPair(-1,ONEDOWN)
+            WindDirection.NORTHEAST -> XYPair(1,oneUp())
+            WindDirection.NORTHWEST -> XYPair(-1,oneUp())
+            WindDirection.SOUTHEAST -> XYPair(1,oneDown())
+            WindDirection.SOUTHWEST -> XYPair(-1,oneDown())
         }
+
+
+    fun plusXY(dx: Int, dy: Int) = Point(gridOrientation, x+dx, y+dy)
 
     fun plusX(dx: Int) = plusXY(dx, 0)
     fun plusY(dy: Int) = plusXY(0, dy)
@@ -79,6 +99,10 @@ abstract class Point(open val x: Int, open val y: Int) {
             null
         }
 
+    companion object {
+        fun of(gridOrientation: Boolean, input: String): Point = XYPair.fromString(input).run { Point(gridOrientation, this.x, this.y) }
+        fun of(gridOrientation: Boolean, x: Int, y: Int) = Point(gridOrientation, x, y)
+    }
 }
 
 data class XYPair(val x: Int, val y: Int) {
@@ -91,4 +115,6 @@ data class XYPair(val x: Int, val y: Int) {
             .split(",").run { XYPair(this[0].trim().toInt(), this[1].trim().toInt()) }
     }
 }
+
+
 

@@ -1,22 +1,27 @@
 package tool.coordinate.twodimensional
 
-private fun Collection<Point>.yRange(): IntProgression {
+private fun Collection<Point>.yRange(gridOrientation: Boolean): IntProgression {
     val minY = this.minByOrNull { it.y }?.y ?: -1
     val maxY = this.maxByOrNull { it.y }?.y ?: -1
-    return if (this.first() is XYCoordinate) (maxY downTo minY) else (minY .. maxY)
+    return if (gridOrientation) (minY .. maxY) else (maxY downTo minY)
 }
 
-private fun Collection<Point>.xRange(): IntProgression {
+private fun Collection<Point>.xRange(gridOrientation: Boolean=true): IntProgression {
     val minX = this.minByOrNull { it.x }?.x ?: -1
     val maxX = this.maxByOrNull { it.x }?.x ?: -1
     return (minX .. maxX)
 }
 
+private fun newField(gridOrientation: Boolean, x: Int, y: Int): Point =
+    if (gridOrientation) posOf(x,y) else xyCoordinateOf(x,y)
+
 fun <T> Map<Point, T>.printAsGrid(default: String=".", itemAsString: (T)->String) {
-    val posType = (this.keys.first() is GridPos)
-    this.keys.yRange().forEach { y ->
-        this.keys.xRange().forEach { x ->
-            val field = if (posType) posOf(x,y) else xyCoordinateOf(x,y)
+    if (this.isEmpty())
+        return
+    val posType = (this.keys.first().gridOrientation)
+    this.keys.yRange(posType).forEach { y ->
+        this.keys.xRange(posType).forEach { x ->
+            val field = newField(posType, x,y)
             if (this.contains(field)) {
                 print(itemAsString(this[field]!!))
             } else {
@@ -28,10 +33,12 @@ fun <T> Map<Point, T>.printAsGrid(default: String=".", itemAsString: (T)->String
 }
 
 fun Collection<Point>.printAsGrid(itemAsString: (Point)->String) {
-    val posType = (this.first() is GridPos)
-    this.yRange().forEach { y ->
-        this.xRange().forEach { x ->
-            val field = if (posType) posOf(x,y) else xyCoordinateOf(x,y)
+    if (this.isEmpty())
+        return
+    val gridOrientation = (this.first().gridOrientation)
+    this.yRange(gridOrientation).forEach { y ->
+        this.xRange(gridOrientation).forEach { x ->
+            val field = newField(gridOrientation, x,y)
             print(itemAsString(field))
         }
         println()
@@ -39,10 +46,12 @@ fun Collection<Point>.printAsGrid(itemAsString: (Point)->String) {
 }
 
 fun Collection<Point>.printAsGrid(defaultEmpty: String=".", defaultAvailable: String="#") {
-    val posType = (this.first() is GridPos)
-    this.yRange().forEach { y ->
-        this.xRange().forEach { x ->
-            val field = if (posType) posOf(x,y) else xyCoordinateOf(x,y)
+    if (this.isEmpty())
+        return
+    val gridOrientation = this.first().gridOrientation
+    this.yRange(gridOrientation).forEach { y ->
+        this.xRange(gridOrientation).forEach { x ->
+            val field = newField(gridOrientation, x,y)
             if (this.contains(field)) {
                 print(defaultAvailable)
             } else {
@@ -54,6 +63,7 @@ fun Collection<Point>.printAsGrid(defaultEmpty: String=".", defaultAvailable: St
 }
 
 fun Pair<Point, Point>.printGrid(itemAsString: (Point)->String) {
+    val gridOrientation = (this.first.gridOrientation)
     val minX = this.first.x
     val minY = this.first.y
     val maxX = this.second.x
@@ -61,7 +71,7 @@ fun Pair<Point, Point>.printGrid(itemAsString: (Point)->String) {
 
     (minY..maxY).forEach { y ->
         (minX..maxX).forEach { x ->
-            val field = posOf(x,y)
+            val field = newField(gridOrientation, x, y)
             print(itemAsString(field))
         }
         println()
