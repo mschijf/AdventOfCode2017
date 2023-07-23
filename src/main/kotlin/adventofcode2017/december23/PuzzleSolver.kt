@@ -52,27 +52,37 @@ class PuzzleSolver(test: Boolean) : PuzzleSolverAbstract(test) {
      *        return h
      *
      *  Dit runt al binnen 200 ms en levert 903 als antwoord op. Gebruikmakend van de isPrime() hulpfunctie die ik
-     *  al had, kan het nog korter (maar niet sneller):
+     *  al had, kan het nog korter (en sneller):
      *
-     *        return (108400..125400 step 17).filterNot { it.isPrime() }.count()
+     *        return (108400..125400 step 17).count { !it.isPrime() }
      *
      */
 
     override fun resultPartTwo(): Any {
-//        return (108400..125400 step 17).filterNot { it.isPrime() }.count()
-        var h = 0
-        for (b in 108400..125400 step 17) {
-            var f = false
-            for (d in 2 until b) {
-                if (b % d == 0) {
-                    f = true
-                    break
-                }
-            }
-            if (f)
-                h++
-        }
-        return h
+        return (108400..125400 step 17).count { !it.isPrime() }
+
+//      Todd's answer:
+//
+//        val a = inputLines.first().split(" ")[2].toInt() * 100 + 100000
+//        return (a .. a+17000 step 17).count {
+//            !it.toBigInteger().isProbablePrime(5)
+//        }
+
+//        The loop:
+//
+//        var h = 0
+//        for (b in 108400..125400 step 17) {
+//            var f = false
+//            for (d in 2 until b) {
+//                if (b % d == 0) {
+//                    f = true
+//                    break
+//                }
+//            }
+//            if (f)
+//                h++
+//        }
+//        return h
     }
 }
 
