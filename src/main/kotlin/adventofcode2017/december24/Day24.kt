@@ -26,15 +26,13 @@ class Day24(test: Boolean) : PuzzleSolverAbstract(test) {
             candidates.maxOf { candidate ->  candidate.value() + (this-candidate).solveStrongest(candidate.otherPort(openConnection))}
     }
 
-    private fun Set<Component>.solveLongest(openConnection: Int, soFar: Pair<Int, Int> = Pair(0,0)): Pair<Int, Int> {
+    private fun Set<Component>.solveLongest(openConnection: Int): Pair<Int, Int> {
         val candidates = this.findCandidates(openConnection)
         return if (candidates.isEmpty())
-            soFar
+            Pair(0,0)
         else {
             candidates.maxOfWith(pairComparator) { candidate ->
-                (this - candidate).solveLongest(
-                    candidate.otherPort(openConnection),
-                    Pair(soFar.first+1, soFar.second+candidate.value()))
+                (this - candidate).solveLongest(candidate.otherPort(openConnection)).let { Pair(it.first+1, it.second+candidate.value()) }
             }
         }
     }
