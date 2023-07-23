@@ -3,7 +3,7 @@ package adventofcode2017.december13
 import adventofcode2017.PuzzleSolverAbstract
 
 fun main() {
-    PuzzleSolver(test=false).showResult()
+    Day13(test=false).showResult()
 }
 
 /**
@@ -26,7 +26,7 @@ fun main() {
  */
 
 
-class PuzzleSolver(test: Boolean) : PuzzleSolverAbstract(test) {
+class Day13(test: Boolean) : PuzzleSolverAbstract(test) {
 
     private val layers =
         inputLines.map{l -> l.split(": ").let{ Layer(it[0].toInt(), it[1].toInt()) }}

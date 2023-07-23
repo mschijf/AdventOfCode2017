@@ -6,10 +6,10 @@ import tool.coordinate.twodimensional.Point
 import tool.coordinate.twodimensional.printAsGrid
 
 fun main() {
-    PuzzleSolver(test=false).showResult()
+    Day03(test=false).showResult()
 }
 
-class PuzzleSolver(test: Boolean) : PuzzleSolverAbstract(test) {
+class Day03(test: Boolean) : PuzzleSolverAbstract(test) {
 
     private val puzzleInput = inputLines.first().toInt()
 

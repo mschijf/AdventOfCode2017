@@ -4,11 +4,11 @@ import adventofcode2017.PuzzleSolverAbstract
 import tool.coordinate.twodimensional.*
 
 fun main() {
-    PuzzleSolver(test=false).showResult()
+    Day21(test=false).showResult()
 }
 
 
-class PuzzleSolver(test: Boolean) : PuzzleSolverAbstract(test) {
+class Day21(test: Boolean) : PuzzleSolverAbstract(test) {
 
     private val ruleMap = inputLines.flatMap{it.toListOfRulesForAllVariants()}.associate { rule -> rule.first to rule.second }
     private val start = Grid(Square.of(".#./..#/###").points, 3)

@@ -4,14 +4,14 @@ import adventofcode2017.PuzzleSolverAbstract
 import tool.collectionspecials.CircularLinkedList
 
 fun main() {
-    PuzzleSolver(test=false).showResult()
+    Day17(test=false).showResult()
 }
 
 /**
  * We kunnen het met de circular list doen, maar dat gaat in deel 2 te lang duren en misschien ook nog te weinig geheugen
  * Je kan, bij de tweede, ook bijhouden wanneer er iets op positie 1 wordt toegevoegd
  */
-class PuzzleSolver(test: Boolean) : PuzzleSolverAbstract(test) {
+class Day17(test: Boolean) : PuzzleSolverAbstract(test) {
 
     private val stepSize = if (test) 3 else 369
 

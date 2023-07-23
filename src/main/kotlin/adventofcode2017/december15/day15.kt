@@ -3,10 +3,10 @@ package adventofcode2017.december15
 import adventofcode2017.PuzzleSolverAbstract
 
 fun main() {
-    PuzzleSolver(test=false).showResult()
+    Day15(test=false).showResult()
 }
 
-class PuzzleSolver(test: Boolean) : PuzzleSolverAbstract(test) {
+class Day15(test: Boolean) : PuzzleSolverAbstract(test) {
 
     private val startA = if (test) 65L else 722L
     private val startB = if (test) 8921L else 354L

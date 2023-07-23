@@ -3,10 +3,10 @@ package adventofcode2017.december06
 import adventofcode2017.PuzzleSolverAbstract
 
 fun main() {
-    PuzzleSolver(test=false).showResult()
+    Day06(test=false).showResult()
 }
 
-class PuzzleSolver(test: Boolean) : PuzzleSolverAbstract(test) {
+class Day06(test: Boolean) : PuzzleSolverAbstract(test) {
 
     private val origin = inputLines.first().split("\\s".toRegex()).map{it.trim().toInt()}
 

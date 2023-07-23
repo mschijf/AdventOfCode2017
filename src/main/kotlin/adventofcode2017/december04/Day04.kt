@@ -4,10 +4,10 @@ import adventofcode2017.PuzzleSolverAbstract
 import tool.mylambdas.collectioncombination.*
 
 fun main() {
-    PuzzleSolver(test=false).showResult()
+    Day04(test=false).showResult()
 }
 
-class PuzzleSolver(test: Boolean) : PuzzleSolverAbstract(test) {
+class Day04(test: Boolean) : PuzzleSolverAbstract(test) {
 
     private val passPhraseList = inputLines.map{it.split("\\s".toRegex())}
 

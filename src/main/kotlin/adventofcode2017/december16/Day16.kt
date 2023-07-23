@@ -4,10 +4,10 @@ import adventofcode2017.PuzzleSolverAbstract
 import java.lang.Exception
 
 fun main() {
-    PuzzleSolver(test=false).showResult()
+    Day16(test=false).showResult()
 }
 
-class PuzzleSolver(test: Boolean) : PuzzleSolverAbstract(test) {
+class Day16(test: Boolean) : PuzzleSolverAbstract(test) {
 
     private val danceSequence = inputLines.first().split(",")
     private val programCount = if (test) 5 else 16

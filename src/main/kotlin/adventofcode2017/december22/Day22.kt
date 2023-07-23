@@ -4,13 +4,12 @@ import adventofcode2017.PuzzleSolverAbstract
 import tool.coordinate.twodimensional.Direction
 import tool.coordinate.twodimensional.Point
 import tool.coordinate.twodimensional.posOf
-import tool.coordinate.twodimensional.printGrid
 
 fun main() {
-    PuzzleSolver(test=false).showResult()
+    Day22(test=false).showResult()
 }
 
-class PuzzleSolver(test: Boolean) : PuzzleSolverAbstract(test) {
+class Day22(test: Boolean) : PuzzleSolverAbstract(test) {
 
     private val gridMap = mutableMapOf<Point, InfectionType>()
 

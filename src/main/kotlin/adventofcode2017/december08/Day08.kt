@@ -4,10 +4,10 @@ import adventofcode2017.PuzzleSolverAbstract
 import kotlin.math.max
 
 fun main() {
-    PuzzleSolver(test=false).showResult()
+    Day08(test=false).showResult()
 }
 
-class PuzzleSolver(test: Boolean) : PuzzleSolverAbstract(test) {
+class Day08(test: Boolean) : PuzzleSolverAbstract(test) {
 
     val variableMap = mutableMapOf<String,Int>()
     val instructionList = inputLines.map{line -> parse(line)}

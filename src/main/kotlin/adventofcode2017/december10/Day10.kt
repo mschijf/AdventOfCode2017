@@ -5,10 +5,10 @@ import adventofcode2017.doOneKnotHashCycle
 import adventofcode2017.knotHashEncode
 
 fun main() {
-    PuzzleSolver(test=false).showResult()
+    Day10(test=false).showResult()
 }
 
-class PuzzleSolver(test: Boolean) : PuzzleSolverAbstract(test) {
+class Day10(test: Boolean) : PuzzleSolverAbstract(test) {
 
     override fun resultPartOne(): Any {
         val numbers = IntArray(if (test) 5 else 256) { it }

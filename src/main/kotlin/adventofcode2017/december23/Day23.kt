@@ -1,14 +1,13 @@
 package adventofcode2017.december23
 
 import adventofcode2017.PuzzleSolverAbstract
-import tool.math.getPrimeList
 import tool.math.isPrime
 
 fun main() {
-    PuzzleSolver(test=false).showResult()
+    Day23(test=false).showResult()
 }
 
-class PuzzleSolver(test: Boolean) : PuzzleSolverAbstract(test) {
+class Day23(test: Boolean) : PuzzleSolverAbstract(test) {
 
     override fun resultPartOne(): Any {
         val program = Program(inputLines, mutableListOf<Long>(0,0,0,0, 0,0,0,0))

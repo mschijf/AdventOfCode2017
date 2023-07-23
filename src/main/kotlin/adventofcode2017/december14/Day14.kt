@@ -8,10 +8,10 @@ import tool.mylambdas.intersects
 import java.math.BigInteger
 
 fun main() {
-    PuzzleSolver(test=false).showResult()
+    Day14(test=false).showResult()
 }
 
-class PuzzleSolver(test: Boolean) : PuzzleSolverAbstract(test) {
+class Day14(test: Boolean) : PuzzleSolverAbstract(test) {
 
     private val keyString = if (test) "flqrgnkx" else "hxtvlmkl"
 

@@ -5,10 +5,10 @@ import tool.coordinate.twodimensional.Point
 import tool.coordinate.twodimensional.posOf
 
 fun main() {
-    PuzzleSolver(test = false).showResult()
+    Day19(test = false).showResult()
 }
 
-class PuzzleSolver(test: Boolean) : PuzzleSolverAbstract(test) {
+class Day19(test: Boolean) : PuzzleSolverAbstract(test) {
 
     private val maze = inputLines
         .flatMapIndexed { y: Int, line: String -> line.mapIndexed { x, c -> posOf(x, y) to c } }

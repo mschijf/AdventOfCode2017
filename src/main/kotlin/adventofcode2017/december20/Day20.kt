@@ -2,16 +2,14 @@ package adventofcode2017.december20
 
 import adventofcode2017.PuzzleSolverAbstract
 import tool.coordinate.threedimensional.Point3DLong
-import tool.mylambdas.collectioncombination.mapCombinedItems
 import kotlin.math.absoluteValue
-import kotlin.math.min
 import kotlin.math.sign
 
 fun main() {
-    PuzzleSolver(test=false).showResult()
+    Day20(test=false).showResult()
 }
 
-class PuzzleSolver(test: Boolean) : PuzzleSolverAbstract(test) {
+class Day20(test: Boolean) : PuzzleSolverAbstract(test) {
 
     private val particleList = inputLines.mapIndexed{index, line -> Particle.of(index, line) }
 

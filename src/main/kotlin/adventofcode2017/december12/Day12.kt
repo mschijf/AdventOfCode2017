@@ -3,10 +3,10 @@ package adventofcode2017.december12
 import adventofcode2017.PuzzleSolverAbstract
 
 fun main() {
-    PuzzleSolver(test=true).showResult()
+    Day12(test=true).showResult()
 }
 
-class PuzzleSolver(test: Boolean) : PuzzleSolverAbstract(test) {
+class Day12(test: Boolean) : PuzzleSolverAbstract(test) {
 
     private val pipes = inputLines.associate { it.toPair() }
     private val pipeGroups = pipes.connectPipeGroups()
